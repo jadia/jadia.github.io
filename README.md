@@ -7,6 +7,7 @@ I am thankful to [Ioannis Diamantidis](https://twitter.com/diamantidis_io) for m
 [![Jekyll](https://img.shields.io/badge/powered%20by-jekyll-blue)](https://jekyllrb.com/)
 <!-- ![CI](https://github.com/diamantidis/diamantidis.github.io/workflows/CI/badge.svg) -->
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/jadia/jadia.github.io/blob/source/LICENSE)
+[![Build Status](https://travis-ci.org/jadia/jadia.github.io.svg?branch=source)](https://travis-ci.org/jadia/jadia.github.io)
 <!-- [![Twitter: @diamantidis_io](https://img.shields.io/badge/twitter-@diamantidis_io-blue.svg?style=flat)](https://twitter.com/diamantidis_io) -->
 
 This is the repository for my [personal blog]. 
