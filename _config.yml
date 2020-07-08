@@ -1,9 +1,9 @@
-title: Ioannis Diamantidis
-email: diamantidis@outlook.com
+title: Nitish Jadia
+email: nitish@jadia.dev
 description: >- # this means to ignore newlines until "baseurl:"
   A blog where I publish posts about my learnings on software development, my thoughts, my ideas and topics that I find interesting.
 baseurl: ""
-url: "https://diamantidis.github.io"
+url: "https://jadia.dev"
 permalink: /:categories/:year/:month/:day/:title
 
 # Logo & images
@@ -16,10 +16,10 @@ defaults:
 
 # Author
 author:
-  name: Ioannis Diamantidis
-  url: https://diamantidis.github.io
-  email: diamantidis@outlook.com
-  twitter: diamantidis_io
+  name: Nitish Jadia
+  url: https://jadia.dev
+  email: nitish@jadia.dev
+  twitter: nitishjadia
 
 # Build settings
 markdown: kramdown
@@ -43,12 +43,12 @@ header_pages:
 
 footer-links:
   rss: rss
-  twitter: diamantidis_io
-  github: diamantidis
-  email: diamantidis@outlook.com
+  twitter: nitishjadia
+  github: jadia
+  email: nitish@jadia.dev
   # facebook:
-  linkedin: ioannis-diamantidis
-  instagram: diama.codes
+  linkedin: jadianitish
+  #instagram: 
 
 # Exclude from processing.
 exclude:
@@ -58,11 +58,11 @@ exclude:
   - Dangerfile
 
 # Google Analytics
-google_analytics: UA-121787430-1
+google_analytics: UA-61932410-4
 
 # Disqus
-# disqus:
-#   shortname: ioannisblog-1
+disqus:
+  shortname: jadia-dev
 
 social:
   - name: Twitter
@@ -90,7 +90,7 @@ pagination:
   sort_reverse: true
 
 twitter:
-  username: diamantidis_io
+  username: nitishjadia
   card: summary
 
 compress_html:
@@ -104,6 +104,30 @@ compress_html:
   startings: []
 
 collections:
-  tips:
+  til:
     output: true
     output_tags: true
+  howto:
+    output: true
+    output_tags: true
+
+jekyll_compose:
+  default_front_matter:
+    drafts:
+      description: 
+      tags: []
+      image: 
+          path: /assets/social-devops-python-preview.png
+          width: 
+          height: 
+      twitter:
+          card: summary_large_image
+    posts:
+      description: 
+      tags: []
+      image: 
+          path: /assets/social-devops-python-preview.png
+          width: 1120
+          height: 630
+      twitter:
+          card: summary_large_image

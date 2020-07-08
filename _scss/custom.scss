@@ -458,29 +458,31 @@ svg.fa.fa-arrow-right.fa-w-14 {
   --tag-color: hsla(0, 0%, 100%, 1);
   --highlight-color: hsla(208, 5%, 30%, 1);
   --highlight-background-color: hsla(208, 75%, 85%, 1);
-  --tips-card-background-color: hsla(0, 0%, 100%, 1);
-  --tips-card-shadow-color: hsla(0, 0%, 46%, 1);
+  --til-card-background-color: hsla(0, 0%, 100%, 1);
+  --til-card-shadow-color: hsla(0, 0%, 46%, 1);
 }
 
-@media screen and (prefers-color-scheme: dark) {
-  :root {
-    --base-color: hsla(208, 56%, 46%, 1);
-    --hover-color: hsla(208, 73%, 55%, 1);
-    --metatext-color: hsla(208, 15%, 70%, 1);
-    --nav-color: hsla(208, 75%, 75%, 1);
-    --link-color: hsla(208, 75%, 75%, 1);
-    --page-color: hsla(208, 7%, 24%, 1);
-    --text-color: hsla(0, 0%, 93%, 1);
-    --divider-color: hsla(208, 27%, 65%, 1);
-    --border-color: hsla(208, 27%, 65%, 1);
-    --title-color: hsla(0, 0%, 93%, 1);
-    --tag-color: hsla(0, 0%, 100%, 1);
-    --highlight-color: hsla(208, 75%, 99%, 1);
-    --highlight-background-color: hsla(208, 75%, 25%, 1);
-    --tips-card-background-color: hsla(208, 7%, 21%, 1);
-    --tips-card-shadow-color: hsla(0, 0%, 15%, 1);
-  }
-}
+// Uncomment to enable dark mode.
+
+// @media screen and (prefers-color-scheme: dark) {
+//   :root {
+//     --base-color: hsla(208, 56%, 46%, 1);
+//     --hover-color: hsla(208, 73%, 55%, 1);
+//     --metatext-color: hsla(208, 15%, 70%, 1);
+//     --nav-color: hsla(208, 75%, 75%, 1);
+//     --link-color: hsla(208, 75%, 75%, 1);
+//     --page-color: hsla(208, 7%, 24%, 1);
+//     --text-color: hsla(0, 0%, 93%, 1);
+//     --divider-color: hsla(208, 27%, 65%, 1);
+//     --border-color: hsla(208, 27%, 65%, 1);
+//     --title-color: hsla(0, 0%, 93%, 1);
+//     --tag-color: hsla(0, 0%, 100%, 1);
+//     --highlight-color: hsla(208, 75%, 99%, 1);
+//     --highlight-background-color: hsla(208, 75%, 25%, 1);
+//     --til-card-background-color: hsla(208, 7%, 21%, 1);
+//     --til-card-shadow-color: hsla(0, 0%, 15%, 1);
+//   }
+// }
 
 .post-content a:not(:visited):not(:hover):not(:active) {
   color: var(--link-color);
@@ -500,20 +502,20 @@ code.highlighter-rouge {
   padding: 13px;
 }
 
-// Start of tips
-.tips-post {
+// Start of til
+.til-post {
   border-width: 1px;
   border-radius: 12px;
   padding: 13px;
   display: block;
-  background: var(--tips-card-background-color);
-  box-shadow: 4px 4px 10px 5px var(--tips-card-shadow-color);
+  background: var(--til-card-background-color);
+  box-shadow: 4px 4px 10px 5px var(--til-card-shadow-color);
   display: grid;
   grid-gap: 0px;
   grid-template-rows: max-content max-content max-content auto max-content;
 }
 
-.tips-post {
+.til-post {
   h2 {
     margin-bottom: 0px;
     margin-block-start: 0;
@@ -521,18 +523,18 @@ code.highlighter-rouge {
   }
 }
 
-.tips ul.post-list {
+.til ul.post-list {
   grid-template-columns: repeat(2, 1fr);
   display: grid;
   grid-gap: 15px 50px;
 }
 
 @media only screen and (max-width: 600px) {
-  .tips ul.post-list {
+  .til ul.post-list {
     grid-template-columns: 1fr;
   }
 }
-// End of tips
+// End of til
 
 // Start of 'Type of content'
 .post-type,

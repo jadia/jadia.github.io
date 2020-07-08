@@ -1,13 +1,15 @@
-# [diamantidis.github.io](https://diamantidis.github.io) 
+# [jadia.github.io](https://jadia.github.io) 
+
+The blog theme is a fork of [diamantidis.github.io](https://diamantidis.github.io). 
+I am thankful to [Ioannis Diamantidis](https://twitter.com/diamantidis_io) for making the blog code open source. All the credit for initial repository setup goes to him.
+
 
 [![Jekyll](https://img.shields.io/badge/powered%20by-jekyll-blue)](https://jekyllrb.com/)
-![CI](https://github.com/diamantidis/diamantidis.github.io/workflows/CI/badge.svg)
-[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/diamantidis/diamantidis.github.io/blob/source/LICENSE)
-[![Twitter: @diamantidis_io](https://img.shields.io/badge/twitter-@diamantidis_io-blue.svg?style=flat)](https://twitter.com/diamantidis_io)
+<!-- ![CI](https://github.com/diamantidis/diamantidis.github.io/workflows/CI/badge.svg) -->
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/jadia/jadia.github.io/blob/source/LICENSE)
+<!-- [![Twitter: @diamantidis_io](https://img.shields.io/badge/twitter-@diamantidis_io-blue.svg?style=flat)](https://twitter.com/diamantidis_io) -->
 
 This is the repository for my [personal blog]. 
-
-In this blog, you can find posts about my learnings, my thoughts, my ideas and things that I find interesting and worth mentioning. Mostly software development oriented.
 
 The whole site is open source, meaning that all the code that runs on the live site is here. 
 
@@ -60,13 +62,13 @@ This project is licensed under the terms of the MIT license. See the [LICENSE] f
 * [Email]
 
 
-[personal blog]: https://diamantidis.github.io
+[personal blog]: https://jadia.github.io
 [Jekyll]: https://jekyllrb.com/
 [Markdown]: https://daringfireball.net/projects/markdown/
 [GitHub Pages]: https://pages.github.com/
 [GitHub]: https://github.com/
-[`source`]: https://github.com/diamantidis/diamantidis.github.io/tree/source
-[`master`]: https://github.com/diamantidis/diamantidis.github.io/tree/master
+[`source`]: https://github.com/jadia/jadia.github.io/tree/source
+[`master`]: https://github.com/jadia/jadia.github.io/tree/master
 [`diamantidis.github.io`]: https://diamantidis.github.io
 [Danger]: https://github.com/danger/danger
 [Danger-prose]: https://github.com/dbgrandi/danger-prose
@@ -74,8 +76,8 @@ This project is licensed under the terms of the MIT license. See the [LICENSE] f
 [Ruby]: https://www.ruby-lang.org/en/
 [Bundler]: https://bundler.io/
 [`http://127.0.0.1:4000`]: http://127.0.0.1:4000
-[issue]: https://github.com/diamantidis/diamantidis.github.io/issues/new
+[issue]: https://github.com/jadia/jadia.github.io/issues/new
 [LICENSE]: LICENSE
-[Twitter]: https://twitter.com/diamantidis_io
-[LinkedIn]: http://linkedin.com/in/ioannis-diamantidis
-[Email]: mailto:diamantidis@outlook.com
+[Twitter]: https://twitter.com/nitishjadia
+[LinkedIn]: http://linkedin.com/in/jadianitish
+[Email]: mailto:nitish@jadia.dev
