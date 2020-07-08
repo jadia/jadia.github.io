@@ -118,8 +118,8 @@ jekyll_compose:
       tags: []
       image: 
           path: /assets/social-devops-python-preview.png
-          width: 
-          height: 
+          width: 1120
+          height: 630
       twitter:
           card: summary_large_image
     posts:
