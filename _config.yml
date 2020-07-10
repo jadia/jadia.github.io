@@ -7,12 +7,14 @@ url: "https://jadia.dev"
 permalink: /:categories/:year/:month/:day/:title
 
 # Logo & images
-logo: /assets/socialIcon.png
+# logo: /assets/socialIcon.png
+logo: /assets/ms-icon-310x310.png
 defaults:
   - scope:
       path: ""
     values:
-      image: /assets/socialIcon.png
+      # image: /assets/socialIcon.png
+      image: /assets/ms-icon-310x310.png
 
 # Author
 author:
@@ -118,8 +120,8 @@ jekyll_compose:
       tags: []
       image: 
           path: /assets/social-devops-python-preview.png
-          width: 1120
-          height: 630
+          width: 1200
+          height: 628
       twitter:
           card: summary_large_image
     posts:
@@ -127,7 +129,7 @@ jekyll_compose:
       tags: []
       image: 
           path: /assets/social-devops-python-preview.png
-          width: 1120
-          height: 630
+          width: 1200
+          height: 628
       twitter:
           card: summary_large_image

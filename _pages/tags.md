@@ -15,9 +15,9 @@ permalink: /tags
 
 {% assign post_tags = site_tags | split: ',' | sort %}
 
-{% assign tag_words = post_tags | concat: til_tags | uniq %}
+{% assign tag_words2 = post_tags | concat: til_tags | uniq %}
 
-{% assign tag_words = post_tags | concat: howto_tags | uniq %}
+{% assign tag_words = tag_words2 | concat: howto_tags | uniq %}
 
 {% assign grouped_til_tags = site.til | map: 'tags' | join: ',' | split: ',' | group_by: tag %}
 
