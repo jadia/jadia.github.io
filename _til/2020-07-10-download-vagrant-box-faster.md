@@ -4,7 +4,7 @@ title: Download Vagrant Box faster
 description: 
 tags: ["Vagrant"]
 image:
-  path: "/assets/social-devops-python-preview.png"
+  path: "assets/til/vagrant-faster-cover.png"
   width: 1120
   height: 630
 twitter:
