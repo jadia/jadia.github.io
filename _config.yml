@@ -14,7 +14,7 @@ defaults:
       path: ""
     values:
       # image: /assets/socialIcon.png
-      image: /assets/ms-icon-310x310.png
+      image: /assets/social-devops-python-preview.png
 
 # Author
 author:
