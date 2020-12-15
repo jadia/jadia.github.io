@@ -12,7 +12,7 @@ twitter:
   card: summary_large_image
 ---
 
-I have a habit of putting my ultrabook on bed (vents are blocked) because the fans rarly start. But when it does I make sure to give enough room for fans to work.
+I have a habit of putting my ultrabook on bed (vents are blocked) because the fans rarely start. But when it does I make sure to give enough room for fans to work.
 
 Below is a script I made to get notification on Ubuntu when fan starts. It requires `psutil` to be installed.
 
@@ -30,7 +30,7 @@ import sys
 def signal_handler(signal, frame):
   sys.exit(0)
 
-# Handle Ctrl+c
+# Handle Ctrl+C
 signal.signal(signal.SIGINT, signal_handler)
 
 
@@ -47,7 +47,7 @@ while True:
     elif fan_speed != 0 and fan_running:
         print("Fan still running! Sleeping for 5min.")
         cmd = f'notify-send "Fan speed: {fan_speed} RPM"'
-        sleep_time = 300
+        sleep_time = 300 # seconds
     else:
         if fan_running:
             cmd = 'notify-send "Fan stopped!"'
@@ -59,5 +59,5 @@ while True:
     if cmd:
         os.system(cmd)
     sleep(sleep_time)
-    
+
 ```
