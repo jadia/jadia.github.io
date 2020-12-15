@@ -18,6 +18,7 @@ Below is a script I made to get notification on Ubuntu when fan starts. It requi
 
 
 ```python
+
 #!/usr/bin/env python3
 
 import psutil
@@ -58,4 +59,5 @@ while True:
     if cmd:
         os.system(cmd)
     sleep(sleep_time)
-    ```
+    
+```
