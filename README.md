@@ -35,13 +35,14 @@ On every PR against the `source` branch, a `Travis CI` job runs using [Danger] a
 #### Steps
 * Run the following commands:
 ```
-git clone -b source https://github.com/diamantidis/diamantidis.github.io.git
-cd diamantidis.github.io
-bundle install
-bundle exec jekyll serve
+git clone -b source https://github.com/jadia/jadia.github.io.git jadia.dev
+cd jadia.dev
+docker build -t bundle .
+docker run --rm -ti -v $(pwd):/work -p 4000:4000 bundle
 ```
 * Open [`http://127.0.0.1:4000`] in your favorite browser
 
+The content also supports emojis. Refer to this cheatsheet: [https://www.webfx.com/tools/emoji-cheat-sheet/](https://www.webfx.com/tools/emoji-cheat-sheet/)
 
 ## Contributing
 
