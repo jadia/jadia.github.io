@@ -276,7 +276,7 @@ h1#bio, h1#personal, h1#stack {
 }
 
 .highlight pre code {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .gist .blob-code-inner {
@@ -288,7 +288,7 @@ h1#bio, h1#personal, h1#stack {
 }
 
 .highlighter-rouge .highlight {
-  overflow-x: scroll;
+  overflow-x: auto;
   max-width: 740px;
 }
 
