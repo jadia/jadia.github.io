@@ -2,5 +2,5 @@
     // Settings for "Paste Image" extension
     "pasteImage.path": "${projectRoot}/assets/posts/${currentFileNameWithoutExt}",
     "pasteImage.forceUnixStyleSeparator": true,
-    // "pasteImage.prefix": "/"
+    "pasteImage.prefix": "/"
 }
