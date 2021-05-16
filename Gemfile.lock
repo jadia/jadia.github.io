@@ -285,7 +285,7 @@ DEPENDENCIES
   jekyll-paginate-v2
   jekyll-sitemap (~> 1.4.0)
   jemoji (~> 0.11.1)
-  minima (~> 2.4)
+  minima (~> 2.5.1)
   zeitwerk (~> 2.3.0)
 
 BUNDLED WITH
