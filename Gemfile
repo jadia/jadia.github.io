@@ -16,6 +16,7 @@ group :jekyll_plugins do
   gem "jekyll-paginate-v2"
   # Nitish's custom gem
   gem "jekyll-compose"
+  gem "jekyll-redirect-from"
 end
 
 # Fix missing gem

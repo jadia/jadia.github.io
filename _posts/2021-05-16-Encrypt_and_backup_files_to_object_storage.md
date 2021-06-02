@@ -87,3 +87,8 @@ fusermount -u private
 Just make sure that you keep eye on the free limits. You can try to do a small sync everyday to save money on the transfer cost.
 
 ![](/assets/posts/2021-05-16-Encrypt_and_backup_files_to_object_storage/2021-05-16-23-17-53.png)
+
+
+## References
+
+1. [Gocryptfs security audit](https://defuse.ca/downloads/audits/gocryptfs-cryptography-design-audit.pdf)
