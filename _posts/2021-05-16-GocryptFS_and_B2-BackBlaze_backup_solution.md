@@ -220,7 +220,11 @@ I have not tried to recover the files using `master-key` in the reverse-mode. I'
 
 ## Further reading
 
-- [Should we upload gocryptfs.conf to cloud.](https://github.com/rfjakob/gocryptfs/issues/50)
+- [Should we upload gocryptfs.conf in cloud?](https://github.com/rfjakob/gocryptfs/issues/50)
+- [recover from missing or corrupt gocryptfs.diriv](https://github.com/rfjakob/gocryptfs/issues/456)
+- [Regenerate the config](https://github.com/rfjakob/gocryptfs/issues/446)
+- [Wiki: Recreate config file using master's key](https://github.com/rfjakob/gocryptfs/wiki/Recreate-gocryptfs.conf-using-masterkey)
+- [Best Practices](https://github.com/rfjakob/gocryptfs/wiki/Best-Practices)
 
 
 ## References
