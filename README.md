@@ -74,12 +74,12 @@ This project is licensed under the terms of the MIT license. See the [LICENSE] f
 [`jadia.dev`]: https://jadia.dev
 [Danger]: https://github.com/danger/danger
 [Danger-prose]: https://github.com/dbgrandi/danger-prose
-[Git]: http://git-scm.com/
+[Git]: https://git-scm.com/
 [Ruby]: https://www.ruby-lang.org/en/
 [Bundler]: https://bundler.io/
 [`http://127.0.0.1:4000`]: http://127.0.0.1:4000
 [issue]: https://github.com/jadia/jadia.github.io/issues/new
 [LICENSE]: LICENSE
 [Twitter]: https://twitter.com/nitishjadia
-[LinkedIn]: http://linkedin.com/in/jadianitish
+[LinkedIn]: https://linkedin.com/in/jadianitish
 [Email]: mailto:nitish@jadia.dev

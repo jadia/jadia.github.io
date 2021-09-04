@@ -32,6 +32,7 @@ Radarr: Download movies
 Sonarr: Download TV series  
 Jackett: Indexer for the above stuff  
 ruTorrent: Torrent downloader  
+Plex: Media player to watch torrented content    
 
 # Misc
 
@@ -40,5 +41,7 @@ ruTorrent: Torrent downloader
 
 # Hardware
 
-Dell 7567: Lots of RAM and quite heavy.  
+Dell 5402: Lightweight and does the job.  
 Seedbox: 1TB HDD, 1Gbps, 6TB bandwidth.  
+Raspberry Pi 2B(1GB): Runs as a file-sharing and media server.    
+Raspberry Pi 4B(8GB): Local development playground.    
