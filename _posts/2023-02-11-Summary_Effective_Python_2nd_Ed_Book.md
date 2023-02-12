@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Summary: Effective Python 2nd Ed. Book
+title: Summary - Effective Python 2nd Ed. Book
 date: 2023-02-11 10:10 +0530
 description: 
 tags: ["Python"]
