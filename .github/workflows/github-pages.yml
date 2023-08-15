@@ -16,6 +16,8 @@ jobs:
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
-      - uses: helaili/jekyll-action@2.4.0
+      ## jekyll-actions has been deprecated, in case of failure this needs to be
+      ## removed. see https://github.com/helaili/jekyll-action#-deprecation-notice-
+      - uses: helaili/jekyll-action@2.5.0 
         with:
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
