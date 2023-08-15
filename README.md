@@ -82,4 +82,3 @@ This project is licensed under the terms of the MIT license. See the [LICENSE] f
 [LICENSE]: LICENSE
 [Twitter]: https://twitter.com/nitishjadia
 [LinkedIn]: https://linkedin.com/in/jadianitish
-[Email]: mailto:nitish@jadia.dev

@@ -1,5 +1,4 @@
 title: Nitish Jadia
-email: nitish@jadia.dev
 description: >- # this means to ignore newlines until "baseurl:"
   A blog where I publish posts about my learnings on software development, my thoughts, my ideas and topics that I find interesting.
 baseurl: ""
@@ -20,7 +19,6 @@ defaults:
 author:
   name: Nitish Jadia
   url: https://jadia.dev
-  email: nitish@jadia.dev
   twitter: nitishjadia
 
 # Build settings
@@ -47,7 +45,6 @@ footer-links:
   rss: rss
   twitter: nitishjadia
   github: jadia
-  email: nitish@jadia.dev
   # facebook:
   linkedin: jadianitish
   #instagram: 
