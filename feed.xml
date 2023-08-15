@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="https://jadia.dev/feed.xml" rel="self" type="application/atom+xml" /><link href="https://jadia.dev/" rel="alternate" type="text/html" /><updated>2023-08-15T13:19:27+00:00</updated><id>https://jadia.dev/feed.xml</id><title type="html">Nitish Jadia</title><subtitle>A blog where I publish posts about my learnings on software development, my thoughts, my ideas and topics that I find interesting.</subtitle><author><name>Nitish Jadia</name></author><entry><title type="html">Expose Raspberry Pi to the Internet using Cloudflare Tunnel</title><link href="https://jadia.dev/2021/08/15/Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel" rel="alternate" type="text/html" title="Expose Raspberry Pi to the Internet using Cloudflare Tunnel" /><published>2021-08-15T13:30:00+00:00</published><updated>2021-08-15T13:30:00+00:00</updated><id>https://jadia.dev/2021/08/15/Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel</id><content type="html" xml:base="https://jadia.dev/2021/08/15/Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel">&lt;p&gt;I’ve been using Raspberry Pi from past 6 years as a file sharing and media server. 
+This year I bought the latest version of Pi on an impulse and now I have no idea what to do with it.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://www.raspberrypi.org/help/what-%20is-a-raspberry-pi/&quot;&gt;official website&lt;/a&gt; describes Raspberry Pi as&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;a low cost, credit-card sized computer&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Some websites like - &lt;a href=&quot;https://louwrentius.com/this-blog-is-now-running-on-solar-power.html&quot;&gt;This Blog Is Now Running on Solar Power&lt;/a&gt; gave me an inspiration to host a website on my Raspberry Pi.
+The content for the website can be added later when I’ll put my development skills to use, but at that moment I thought that it would be really cool to host a website straight our of my Raspberry Pi.&lt;/p&gt;
+
+&lt;p&gt;If I wish to host a server from my home network:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;I would require a Dynamic DNS since I do not have a static IP.&lt;/li&gt;
+  &lt;li&gt;A script to update the DDNS entry incase my IP changes.&lt;/li&gt;
+  &lt;li&gt;Port-forward to the Raspberry Pi’s local IP address.&lt;/li&gt;
+  &lt;li&gt;Set up certificates to support HTTPS.&lt;/li&gt;
+  &lt;li&gt;Hope that nobody hacks into your home network 🤞.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Hosting a server from your home network is a nightmare. The Internet is already a scary place with bad people all over the place. It’s risky to allow a vulnerable Raspberry Pi running inside your home which is accessible from the Internet. Once, &lt;a href=&quot;https://www.pcmag.com/news/nasa-hack-used-a-raspberry-pi&quot;&gt;a rouge Raspberry Pi resulted in NASA hack&lt;/a&gt;, beware!&lt;/p&gt;
+
+&lt;p&gt;The diagram below shows how port forwarding punches a hole into your router.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-08-15-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-17-01-56-46.png&quot; alt=&quot;Port forwarding&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-are-cloudflare-tunnels&quot;&gt;What are Cloudflare Tunnels?&lt;/h2&gt;
+
+&lt;p&gt;Recently, Cloudflare made a &lt;em&gt;boring&lt;/em&gt; &lt;a href=&quot;https://blog.cloudflare.com/tunnel-for-everyone/&quot;&gt;announcement&lt;/a&gt; about offering Cloudflare tunnels (formally, &lt;em&gt;Argo Tunnels&lt;/em&gt;) for free!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Cloudflare Tunnels&lt;/strong&gt; create an encrypted tunnel between your server and the Cloudflare network using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cloudflared&lt;/code&gt; daemon.
+Because of this, users won’t directly connect to your server, instead they will connect via proxy through Cloudflare’s network.&lt;/p&gt;
+
+&lt;p&gt;This takes away a lot of steps involved in exposing your server from the home.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;There is no need to open any ports on your network. To the outside world and even your ISP, your server just looks like any other encrypted web traffic.&lt;/li&gt;
+  &lt;li&gt;There is no need to create, buy or mange TLS certificates as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cloudflared&lt;/code&gt; handles all of this for you.&lt;/li&gt;
+  &lt;li&gt;Cloudflare utilizes smart routing to speed up traffic latency. They avoid congested network and high latency area which routing the traffic through their edge network.&lt;/li&gt;
+  &lt;li&gt;You get a WAF and DDOS protection built in.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://medium.com/@durksauce/self-hosting-with-raspberry-pi-and-argo-tunnels-11f06d1309a9&quot;&gt;Source&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In the diagram below the user can only access the &lt;em&gt;origin&lt;/em&gt;(server) through the Cloudflare’s network but not directly.
+This will provide us an extra layer of security by hiding our origin source and as well as prevent bad actors from accessing
+the website directly.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-08-15-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-17-01-50-56.png&quot; alt=&quot;cloudflared tunnel representation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Later, I might also take a look into &lt;a href=&quot;https://github.com/fatedier/frp&quot;&gt;frp: Fast Reverse Proxy&lt;/a&gt;, but as on now I’ll stick to Cloudflare Tunnels.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-tunnels-work&quot;&gt;How Tunnels work?&lt;/h3&gt;
+
+&lt;p&gt;The HTTP tunnels are always initiated from the client side. Here, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cloudflared&lt;/code&gt; daemon will initiate the connection
+to the Cloudflare’s network. My university network would not allow port-forwarding or allow any outside traffic to connect directly.
+This client side initiation of the connection would help bypass such roadblocks. A single long lived connection is 
+established where many logical sockets are created within one physical socket connection. This method is called Multiplexing.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/a/23397564&quot;&gt;Source: How ngrok works?&lt;/a&gt;  &lt;br /&gt;
+&lt;a href=&quot;https://github.com/inconshreveable/ngrok/blob/master/docs/DEVELOPMENT.md#network-protocol-and-tunneling&quot;&gt;Source: Overview of how ngrok tunneling works&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This is similar to &lt;a href=&quot;http://www.tcpipguide.com/free/t_TCPIPProcessesMultiplexingandClientServerApplicati-2.htm&quot;&gt;TCP multiplexing&lt;/a&gt;, where a host with a single TCP connection can manage communication between multiple processes.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-07-30-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-15-21-01-33.png&quot; alt=&quot;Source: http://www.tcpipguide.com/free/diagrams/portsmultiplexing.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://blog.cloudflare.com/tunnel-for-everyone/&quot;&gt;According to Cloudflare&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;With Tunnel, users can create a private link from their origin server directly to Cloudflare without a publicly routable IP address. Instead, this private connection is established by running a lightweight daemon, cloudflared, on your origin, which creates a secure, outbound-only connection. This means that only traffic that routes through Cloudflare can reach your origin.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Tunnel secures your origin by making outbound-only connections to Cloudflare. This removes legacy model requirements of poking ingress rules into your machine often leaving your infrastructure vulnerable to attack.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;!-- ![Origin Certificates](/assets/posts/2021-08-15-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-16-22-00-35.png) --&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://blog.cloudflare.com/the-making-of-cloudflare-warp/&quot;&gt;Read More: The making of Cloudflare Warp&lt;/a&gt;  &lt;br /&gt;
+&lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/connections/connect-apps#traffic-encryption-between-cloudflare-tunnel-and-https-origin-servers&quot;&gt;Read More: Traffic encryption between Cloudflare tunnel and HTTPS origin servers&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;set-up-cloudflared-tunnel&quot;&gt;Set up Cloudflared Tunnel&lt;/h2&gt;
+
+&lt;p&gt;The following steps are required to set-up the tunnel:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a Docker Image of cloudflared&lt;/li&gt;
+  &lt;li&gt;Login to Cloudflare&lt;/li&gt;
+  &lt;li&gt;Create a new tunnel&lt;/li&gt;
+  &lt;li&gt;Create a DNS entry for your tunnel&lt;/li&gt;
+  &lt;li&gt;Run the tunnel&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We will create a new tunnel which will be accessible from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pi.example.com&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This can also be done without Docker. Cloudflared can be installed as a service on the Raspberry Pi
+which do not support Docker.&lt;/p&gt;
+
+&lt;p&gt;The official guide is here: &lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site&quot;&gt;https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;build-cloudflared-docker-image&quot;&gt;Build cloudflared Docker image&lt;/h3&gt;
+
+&lt;p&gt;As of now, Docker hub doesn’t have any &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;arm64&lt;/code&gt; image for cloudflared, let’s build one for ourselves.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Clone cloudflared repository tunnel&lt;/span&gt;
+git clone https://github.com/cloudflare/cloudflared.git &lt;span class=&quot;nt&quot;&gt;--depth&lt;/span&gt; 1
+
+&lt;span class=&quot;c&quot;&gt;# Build Docker image on Raspberry Pi&lt;/span&gt;
+docker build &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cloudflared:arm64v8&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;login-to-cloudflare&quot;&gt;Login to Cloudflare&lt;/h3&gt;
+
+&lt;p&gt;Create cloudflared directory and give it 777 permission. This dangerously open permission is required because cloudflared container runs on a nonroot user and this user fails to write on the mounted folder if the folder doesn’t have
+this permission.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; ~/.cloudflared &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; 777 ~/.cloudflared
+
+&lt;span class=&quot;c&quot;&gt;# Login to cloudflare&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; ~/.cloudflared:/home/nonroot/.cloudflared cloudflared:arm64v8 tunnel login
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You’ll get a cloudflare link to login. Please select the domain you’d like to use. This will authorize cloudflared
+to create tunnel and new DNS entries.&lt;/p&gt;
+
+&lt;h3 id=&quot;create-a-new-tunnel&quot;&gt;Create a new Tunnel&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Create a new tunnel with name &quot;pi&quot;&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /home/ubuntu/.cloudflared:/home/nonroot/.cloudflared cloudflared:arm64v8 tunnel create pi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;There will be no issue if the Raspberry Pi restarts or looses internet connection, these &lt;em&gt;named tunnels&lt;/em&gt; will help us to reconnect with cloudflare when it reconnects with the internet.&lt;/p&gt;
+
+&lt;p&gt;The newly created tunnel would return a UUID, please take a note of this.&lt;/p&gt;
+
+&lt;p&gt;Let’s create config file with all the details for the tunnel.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;vim ~/.cloudflared/config.yml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the below template replace the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3aaabf8a-a834-2b7d-6ba8-3fb6b24306ff&lt;/code&gt; in &lt;em&gt;config.yml&lt;/em&gt; with your tunnel ID. &lt;br /&gt;
+The target in the config is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;192.168.1.111&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tunnel: 3aaabf8a-a834-2b7d-6ba8-3fb6b24306ff
+credentials-file: /home/nonroot/.cloudflared/3aaabf8a-a834-2b7d-6ba8-3fb6b24306ff.json
+
+&lt;span class=&quot;c&quot;&gt;# The Nginx-Proxy-Manager is exposed on port 80, 81 and 443&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# I have also added cloudflare SSL certificates to NPM.&lt;/span&gt;
+- service: https://192.168.1.111
+  originRequest:
+    noTLSVerify: &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Source: &lt;a href=&quot;https://github.com/aeleos/cloudflared&quot;&gt;https://github.com/aeleos/cloudflared&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/create-tunnel&quot;&gt;More on - creating tunnels&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/ingress#noTLSVerify&quot;&gt;More on - noTLSVerify&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;create-dns-entry-for-the-tunnel&quot;&gt;Create DNS entry for the tunnel&lt;/h3&gt;
+
+&lt;p&gt;We can access the tunnel using Cloudflare’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cfargotunnel.com&lt;/code&gt; domain as well. &lt;br /&gt;
+Just add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.cfargotunnel.com&lt;/code&gt; infront of the UUID. Like: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3aaabf8a-a834-2b7d-6ba8-3fb6b24306ff.cfargotunnel.com&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Create DNS entry for &quot;pi&quot; subdomain&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /home/ubuntu/.cloudflared:/home/nonroot/.cloudflared cloudflared:arm64v8 tunnel route dns pi pi.example.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This will add a new DNS entry to your cloudflare account, the entry must be a &lt;strong&gt;CNAME&lt;/strong&gt;. If it’s not CNAME then
+we have to create a manual entry for the tunnel.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-07-30-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-16-02-12-39.png&quot; alt=&quot;Tunnel entry in cloudflare&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;More on Adding DNS Entry: &lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/routing-to-tunnel/dns&quot;&gt;https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/routing-to-tunnel/dns&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;run-the-tunnel&quot;&gt;Run the tunnel&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Run tunnel&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;always &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--network&lt;/span&gt; host &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /home/ubuntu/.cloudflared:/home/nonroot/.cloudflared cloudflared:arm64v8 tunnel run pi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For every new sub-domain, you can run the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tunnel route dns&lt;/code&gt; command to add it on cloudflare. &lt;br /&gt;
+&lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/run-tunnel&quot;&gt;More: Run a Tunnel - Cloudflare Documentation&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;further-read&quot;&gt;Further read&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Developing a TCP Network Proxy - Pwn Adventure 3. Accessed August 15, 2021. &lt;a href=&quot;https://www.youtube.com/watch?v=iApNzWZG-10&quot;&gt;https://www.youtube.com/watch?v=iApNzWZG-10&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;GitHub. “GitHub - Anderspitman/Awesome-Tunneling: List of Ngrok Alternatives and Other Ngrok-like Tunneling Software and Services. Focus on Self-Hosting.” Accessed August 15, 2021. &lt;a href=&quot;https://github.com/anderspitman/awesome-tunneling&quot;&gt;https://github.com/anderspitman/awesome-tunneling&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/tutorials/single-command&quot;&gt;Cloudflared documentation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developers.cloudflare.com/cloudflare-one/tutorials/share-new-site&quot;&gt;Share New Site using Cloudflared&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;SSH Tunneling - A Deep Dive. Accessed August 16, 2021. &lt;a href=&quot;https://www.youtube.com/watch?v=PZTBO555q44&quot;&gt;https://www.youtube.com/watch?v=PZTBO555q44&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.cloudflare.com/cloudflare-ca-encryption-origin/&quot;&gt;Cloudflare Origin CA&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Cloudflare Community. “Argo Tunnel Nested Subdomain,” May 28, 2021. &lt;a href=&quot;https://community.cloudflare.com/t/argo-tunnel-nested-subdomain/273061/2&quot;&gt;https://community.cloudflare.com/t/argo-tunnel-nested-subdomain/273061/2&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Cloudflare: How to Set up Cloudflare Argo Tunnel FREE on Unraid - Bypass CGNAT. Accessed August 15, 2021. &lt;a href=&quot;https://www.youtube.com/watch?v=RQ-6dActAr8&quot;&gt;https://www.youtube.com/watch?v=RQ-6dActAr8&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Using Free Cloudflare Argo Tunnel to Easily Expose Internal Web Applications to Internet. Accessed August 15, 2021. &lt;a href=&quot;https://www.youtube.com/watch?v=btGtj_hfEJw&quot;&gt;https://www.youtube.com/watch?v=btGtj_hfEJw&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Nick. “Self Hosting with Raspberry Pi and Argo Tunnels.” Medium, May 20, 2020. &lt;a href=&quot;https://medium.com/@durksauce/self-hosting-with-raspberry-pi-and-argo-tunnels-11f06d1309a9&quot;&gt;https://medium.com/@durksauce/self-hosting-with-raspberry-pi-and-argo-tunnels-11f06d1309a9&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Help Center. “How To Set up Argo Tunnels for Remote Access to Local Development Sites,” September 18, 2020. &lt;a href=&quot;https://servebolt.com/help/how-to-set-up-argo-tunnels-for-remote-access-to-local-development-sites/&quot;&gt;https://servebolt.com/help/how-to-set-up-argo-tunnels-for-remote-access-to-local-development-sites/&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Nitish Jadia</name></author><category term="Linux" /><summary type="html">I’ve been using Raspberry Pi from past 6 years as a file sharing and media server. This year I bought the latest version of Pi on an impulse and now I have no idea what to do with it.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://jadia.dev/assets/social-devops-python-preview.png" /><media:content medium="image" url="https://jadia.dev/assets/social-devops-python-preview.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">GocryptFS and B2-BackBlaze backup solution</title><link href="https://jadia.dev/2021/05/16/GocryptFS_and_B2-BackBlaze_backup_solution" rel="alternate" type="text/html" title="GocryptFS and B2-BackBlaze backup solution" /><published>2021-05-16T14:51:00+00:00</published><updated>2021-05-16T14:51:00+00:00</updated><id>https://jadia.dev/2021/05/16/GocryptFS_and_B2-BackBlaze_backup_solution</id><content type="html" xml:base="https://jadia.dev/2021/05/16/GocryptFS_and_B2-BackBlaze_backup_solution">&lt;p&gt;Back in 2019, my laptop’s internal HDD crashed taking down 2TB worth of data with it. Most of the older data was recovered
+from my backup HDDs, but I lost the recent data which was not present in the backup HDDs. The data loss included a part of my master’s thesis, photos taken in 2019 and a lot of code which I did not publish on Github. This happened because I was too lazy to copy the data to my external backup hard disk and sort it.&lt;/p&gt;
+
+&lt;p&gt;This incident made me buy multiple hard disks for better redundancy but from past 2 years I’ve been manually coping data to and from the backup drives. These drives also contain a lot of sensitive data hence I had to keep them physically safe from others.&lt;/p&gt;
+
+&lt;p&gt;Inspired by this article, &lt;a href=&quot;https://www.unixsheikh.com/articles/how-i-store-my-files-and-why-you-should-not-rely-on-fancy-tools-for-backup.html&quot;&gt;Don’t use fancy tools&lt;/a&gt;, I’ve decided to come up with a backup solution for myself which I will cover in some other post. This post aims to be a guide on backing up the most critical and sensitive data to the cloud.&lt;/p&gt;
+
+&lt;p&gt;Solutions like Google Drive, OneDrive or Dropbox are great but they are too expensive for my use case. I want a Cloud storage
+where I can simply upload and forget, only access it in case something happens to my backup hard disks. &lt;br /&gt;
+Object storage, specifically &lt;strong&gt;BlackBlaze B2&lt;/strong&gt;, &lt;em&gt;seems&lt;/em&gt; to be a good for long term backup.&lt;/p&gt;
+
+&lt;p&gt;Back in 2010, I use to create a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.zip&lt;/code&gt; files of the data I wanted to protect, but now given the size of data and possibility of a large single file getting corrupted I’ve decided to go with &lt;strong&gt;GoCryptFS&lt;/strong&gt; as the encryption program. &lt;br /&gt;
+It is crucial to have your personal files encrypted when stored on the cloud, you never know about another &lt;a href=&quot;https://en.wikipedia.org/wiki/ICloud_leaks_of_celebrity_photos&quot;&gt;iCloud hack.&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-backblaze-b2-cloud-storage&quot;&gt;What is Backblaze B2 Cloud Storage?&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.ibm.com/cloud/learn/object-storage&quot;&gt;According to IBM&lt;/a&gt;, object storage is a data storage architecture
+for handling large amounts of &lt;strong&gt;unstructured data&lt;/strong&gt; such as video, photos, audio files, documents, sensor data, etc.
+In the object storage the data is stored in a structurally flat data environment and the hierarchical filesystem model
+is not followed.&lt;/p&gt;
+
+&lt;p&gt;On the inside, each object include data and it’s metadata information such as unique ID number instead of file names
+or path. &lt;br /&gt;
+The best part of object storage is the pay-as-you-go structure, where we have to pay only the amount of storage 
+used. It also offers virtually unlimited storage.&lt;/p&gt;
+
+&lt;p&gt;AWS S3 and Backblaze B2, both are object storage. Upon price comparison you’ll find that Backblaze B2 is significantly
+cheaper than AWS S3. That is why we are selecting B2 as our storage option.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-05-16-GocryptFS_and_B2-BackBlaze_backup_solution/2021-08-15-03-25-53.png&quot; alt=&quot;Storage options&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-rclone&quot;&gt;What is Rclone?&lt;/h3&gt;
+
+&lt;p&gt;Rclone is a powerful and actively managed open-source command line program written in GoLang.
+It is generally used to manage files on cloud storage. It covers various types of storage options such as Dropbox,
+Google drive, AWS S3, etc.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Users call rclone &lt;em&gt;“The Swiss army knife of cloud storage”&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It has various features such as file harsh verification to maintain data integrity, sync files between local
+and the cloud storage, check the hashes for missing/extra files, &lt;a href=&quot;https://github.com/rclone/rclone-webui-react&quot;&gt;a beautiful web based GUI&lt;/a&gt;, etc.&lt;/p&gt;
+
+&lt;p&gt;In our use-case, we need something which might keep my cloud storage in sync with the local changes.
+That is why we’ll mostly use the &lt;strong&gt;sync&lt;/strong&gt; option.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-gocryptfs&quot;&gt;What is GoCryptFS?&lt;/h3&gt;
+
+&lt;p&gt;When you wish to store something sensitive either on the cloud or in a external disk,
+it’s advised to encrypt the content before it hits the cloud servers/HDD.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://nuetzlich.net/gocryptfs/&quot;&gt;According to the project’s webpage&lt;/a&gt;, GoCryptFS uses file-based encryption that is implemented as a mountable FUSE filesystem. &lt;a href=&quot;https://en.wikipedia.org/wiki/Filesystem_in_Userspace&quot;&gt;Filesystem in USErspace (FUSE)&lt;/a&gt; is a software interface for Unix and Unix-like computer operating systems that lets non-privileged users create their own file systems without editing kernel code. For GoCryptFS this means that on disk the files 
+will be stored in encrypted format, but when mounted and a correct password is provided, these files are 
+accessible in unencrypted form.&lt;/p&gt;
+
+&lt;p&gt;The encrypted files can be stored in any folder on your hard disk, a USB stick or even inside the Dropbox folder. One advantage of file-based encryption as opposed to disk encryption is that encrypted files can be synchronised efficiently using standard tools like Dropbox or rsync.&lt;/p&gt;
+
+&lt;p&gt;The only fear I have of using GoCryptFS is being locked out of my files due to some issues like the program might not be actively maintained in the future or a file might get corrupt while getting encrypted.&lt;/p&gt;
+
+&lt;p&gt;Despite all this as of now, GoCryptFS is the best file level encryption tool.&lt;/p&gt;
+
+&lt;h3 id=&quot;install-gocryptfs-and-rclone&quot;&gt;Install GoCryptFS and Rclone&lt;/h3&gt;
+
+&lt;p&gt;The post will assume that you have Ubuntu 20.04.2 LTS installed on your system.&lt;br /&gt;
+As of writing this post, I have following version of GoCryptFS:
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gocryptfs 1.7.1; go-fuse 0.0~git20190214.58dcd77; 2019-12-26 go1.13.5 linux/amd64&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; gocryptfs
+curl https://rclone.org/install.sh | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;bash
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;configure-the-object-storage-with-rclone&quot;&gt;Configure the Object Storage with Rclone&lt;/h3&gt;
+
+&lt;p&gt;Register at &lt;a href=&quot;https://www.backblaze.com/b2/cloud-storage.html&quot;&gt;https://www.backblaze.com/b2/cloud-storage.html&lt;/a&gt;. Make sure to read the &lt;a href=&quot;https://www.backblaze.com/b2/cloud-storage-pricing.html&quot;&gt;pricing details&lt;/a&gt; and your &lt;a href=&quot;https://secure.backblaze.com/b2_caps_alerts.htm&quot;&gt;usage statistic&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rclone config&lt;/code&gt; to configure B2 object storage. Follow this guide: &lt;a href=&quot;https://rclone.org/b2/&quot;&gt;https://rclone.org/b2/&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-05-16-Encrypt_and_backup_files_to_object_storage/2021-05-16-22-04-41.png&quot; alt=&quot;rclone config&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Go to Blackblaze B2 website and click on &lt;strong&gt;App keys&lt;/strong&gt; and generate a new set of keys for rclone.
+&lt;img src=&quot;/assets/posts/2021-05-16-Encrypt_and_backup_files_to_object_storage/2021-05-16-22-07-10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a new Application Key and copy the key ID and set it up in rclone.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-05-16-Encrypt_and_backup_files_to_object_storage/2021-05-16-22-07-48.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/posts/2021-05-16-Encrypt_and_backup_files_to_object_storage/2021-05-16-22-34-18.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The name of the remote is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b2-backup&lt;/code&gt;. I can use this name to connect with the Blackblaze server and perform operations like &lt;em&gt;sync&lt;/em&gt;, &lt;em&gt;dir list&lt;/em&gt;, etc.&lt;/p&gt;
+
+&lt;p&gt;Create a new bucket using the following command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rclone &lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;b2-backup:photo-bucket
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Make sure to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_&lt;/code&gt; for the bucket name.&lt;/p&gt;
+
+&lt;h4 id=&quot;create-a-folder-to-store-encrypted-files&quot;&gt;Create a folder to store encrypted files&lt;/h4&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;backup-crypt
+gocryptfs &lt;span class=&quot;nt&quot;&gt;-init&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-plaintextnames&lt;/span&gt; backup-crypt
+
+&lt;span class=&quot;c&quot;&gt;# -plaintextnames : Do not encrypt the names of the files and folder&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#                   this helps when we are trying to recover lost files&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#                   Skip this option if you wish to hide the filenames.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This would create a new &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gocryptfs.config&lt;/code&gt; file inside the backup-crypt directory. 
+Avoid losing this file because the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gocryptfs.config&lt;/code&gt; is required to decrypt the files.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Please make sure to copy and securely save the &lt;em&gt;master-key&lt;/em&gt;. This key will be used to recover files incase you forget the password.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-05-16-GocryptFS_and_B2-BackBlaze_backup_solution/2021-08-15-16-08-35.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Make sure to store the key properly and safe.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;mount-the-encrypted-files&quot;&gt;Mount the encrypted files&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;private
+gocryptfs backup-crypt private
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Copy and paste files in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;private&lt;/code&gt; directory and the encrypted counter part will be reflected in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;backup-crypt&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;h3 id=&quot;unmount-the-private-directory-and-stay-safe-&quot;&gt;Unmount the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;private&lt;/code&gt; directory and stay safe 🔒&lt;/h3&gt;
+
+&lt;p&gt;Once all the files are copied over, we can unmount the filesystem.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;fusermount &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; private
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Just make sure that you keep eye on the free limits in B2. Anyway, there is no limit or cost in uploading the files to B2.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/2021-05-16-Encrypt_and_backup_files_to_object_storage/2021-05-16-23-17-53.png&quot; alt=&quot;b2 api limits&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;sync-encrypted-files&quot;&gt;Sync encrypted files&lt;/h3&gt;
+
+&lt;p&gt;Now we can sync these encrypted files with the B2 storage.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;rclone &lt;span class=&quot;nb&quot;&gt;sync&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--progress&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--transfers&lt;/span&gt; 20 backup-crypt/ b2-backup:photo-bucket
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--transfers 20&lt;/code&gt; will do 20 simultaneous transfers, the default is 4. See &lt;a href=&quot;https://rclone.org/b2/#transfers&quot;&gt;B2 Transfer section for more info&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-if-i-forget-the-password&quot;&gt;What if I forget the password?&lt;/h3&gt;
+
+&lt;p&gt;The worst thing that can happen in this system is that you’ve put an all-out effort to backup your files but
+in case of a disaster you are unable to recover the files. &lt;br /&gt;
+This is why it’s utmost important to test your recovery options and document the process before you upload
+the files to the cloud.&lt;/p&gt;
+
+&lt;h4 id=&quot;using-master-key-to-recover-password&quot;&gt;Using Master Key to recover password&lt;/h4&gt;
+
+&lt;p&gt;The master key is printed just once when we initialize a new gocryptfs directory.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gocryptfs &lt;span class=&quot;nt&quot;&gt;-masterkey&lt;/span&gt; 1dee4196-f007908c-f176e385-e1f5d100-6101f948-a7dbe6e1-5444f8b6-dda356e9 recover.crypt recover
+&lt;span class=&quot;c&quot;&gt;# recover.crypt is the directory with encrypted files&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# recover is an empty directory when the unecrypted files will be mounted.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;When recovering the files using master-key, please make sure that you have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gocryptfs.conf&lt;/code&gt; file present in the directory. &lt;br /&gt;
+If the config file is missing, please generate a new config file using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gocryptfs -init&lt;/code&gt; and copy it to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;recover.crypt&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;h3 id=&quot;encrypt-files-only-on-cloud-but-not-on-hdd&quot;&gt;Encrypt files only on Cloud but not on HDD?&lt;/h3&gt;
+
+&lt;p&gt;A lot of my data is not sensitive enough to store in encrypted form on the hard disk, but I’d like it to be encrypted 
+when stored on a Cloud storage. GoCryptFS has an amazing &lt;strong&gt;reverse-mode&lt;/strong&gt; feature which stores the files in unencrypted 
+format but when it’s mounted, the files on the mount are in encrypted format. This way we can upload the files from the encrypted mount and we don’t actually have to encrypt the files on disk.&lt;/p&gt;
+
+&lt;h4 id=&quot;make-use-of-reverse-mode&quot;&gt;Make use of reverse mode&lt;/h4&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Create .gocryptfs config file in the directory&lt;/span&gt;
+gocryptfs &lt;span class=&quot;nt&quot;&gt;-init&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-reverse&lt;/span&gt; secret_dir
+
+&lt;span class=&quot;c&quot;&gt;# Show encrypted version of the secret_dir files&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;secret_dir.crypt
+gocryptfs &lt;span class=&quot;nt&quot;&gt;-reverse&lt;/span&gt; secret_dir secret_dir.crypt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The files present in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secret_dir&lt;/code&gt; are unencrypted and stored on your disk, whereas the mounted filesystem on
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;secret_dir.crypt&lt;/code&gt; will have encrypted files which can be uploaded to Cloud storage.&lt;/p&gt;
+
+&lt;p&gt;I have not tried to recover the files using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master-key&lt;/code&gt; in the reverse-mode. I’ll update the post when I’m done with the test.&lt;/p&gt;
+
+&lt;h2 id=&quot;further-reading&quot;&gt;Further reading&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rfjakob/gocryptfs/issues/50&quot;&gt;Should we upload gocryptfs.conf in cloud?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rfjakob/gocryptfs/issues/456&quot;&gt;recover from missing or corrupt gocryptfs.diriv&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rfjakob/gocryptfs/issues/446&quot;&gt;Regenerate the config&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rfjakob/gocryptfs/wiki/Recreate-gocryptfs.conf-using-masterkey&quot;&gt;Wiki: Recreate config file using master’s key&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rfjakob/gocryptfs/wiki/Best-Practices&quot;&gt;Best Practices&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://defuse.ca/downloads/audits/gocryptfs-cryptography-design-audit.pdf&quot;&gt;Gocryptfs security audit&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Nitish Jadia</name></author><category term="Linux" /><summary type="html">Back in 2019, my laptop’s internal HDD crashed taking down 2TB worth of data with it. Most of the older data was recovered from my backup HDDs, but I lost the recent data which was not present in the backup HDDs. The data loss included a part of my master’s thesis, photos taken in 2019 and a lot of code which I did not publish on Github. This happened because I was too lazy to copy the data to my external backup hard disk and sort it.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://jadia.dev/assets/social-devops-python-preview.png" /><media:content medium="image" url="https://jadia.dev/assets/social-devops-python-preview.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Get notification when laptop fan turns on</title><link href="https://jadia.dev/2020/12/15/python-fan-speed" rel="alternate" type="text/html" title="Get notification when laptop fan turns on" /><published>2020-12-15T15:50:00+00:00</published><updated>2020-12-15T15:50:00+00:00</updated><id>https://jadia.dev/2020/12/15/python-fan-speed</id><content type="html" xml:base="https://jadia.dev/2020/12/15/python-fan-speed">&lt;p&gt;I have a habit of putting my ultrabook on bed (vents are blocked) because the fans rarely start. But when it does I make sure to give enough room for fans to work.&lt;/p&gt;
+
+&lt;p&gt;Below is a script I made to get notification on Ubuntu when fan starts. The script checks the fan status every few seconds and notifies the user if fan is running and goes to sleep for 5min.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+pip &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;psutil
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/env python3
+&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;psutil&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;logging&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;datetime&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;## Logging
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;logfile_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'fan_status_&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y_&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;m_&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d.log'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/home/nitish/cron'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;logfile_path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'logs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;logfile_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;logging&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;basicConfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;logfile_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;filemode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                            &lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%(pathname)&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%(asctime)&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%(levelname)&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%(message)&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;datefmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                            &lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;logging&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DEBUG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;logging&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getLogger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'fan_speed'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Process started.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;fan_running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;fan_speed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psutil&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sensors_fans&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'dell_smm'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# output: {'dell_smm': [sfan(label='', current=0)]}
+&lt;/span&gt;        &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;debug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'fan_speed: {fan_speed}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fan_speed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fan_running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Fan started running! Sleeping for 5min.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'notify-send &quot;Fan started! {fan_speed} RPM&quot; -t 20000 -u critical'&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;fan_running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;sleep_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# seconds
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fan_speed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fan_running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Fan still running! Sleeping for 5min.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'notify-send &quot;Fan speed: {fan_speed} RPM&quot; -t 10000 -u normal'&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;sleep_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fan_running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'notify-send &quot;Fan stopped!&quot; -t 20000 -u low'&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;fan_running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# log.info(&quot;Fan not running&quot;)
+&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;sleep_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Something went wrong.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But this script won’t be able to show the notification because of how &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;notify-send&lt;/code&gt; works.&lt;/p&gt;
+
+&lt;p&gt;If you are using Ubuntu 20.04(Gnome) in GUI mode then you can go to &lt;strong&gt;Start up applications&lt;/strong&gt; and add your script over there.&lt;/p&gt;
+
+&lt;p&gt;Since, I’m using i3wm (another window manager) I had to find a workaround for the script to run in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crontab&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Adding &lt;strong&gt;target DISPLAY&lt;/strong&gt; to crontab helps.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;c&quot;&gt;#Check the value of DISPLAY var&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DISPLAY&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# output: :0&lt;/span&gt;
+crontab &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So I will add the following lines in the crontab.&lt;/p&gt;
+
+&lt;div class=&quot;language-vim highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+DISPLAY&lt;span class=&quot;p&quot;&gt;=:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+@reboot bash &lt;span class=&quot;p&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/home/nitish/cron/fan_status.py&quot;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Cheers! :beers:&lt;/p&gt;</content><author><name>Nitish Jadia</name></author><category term="Python" /><summary type="html">I have a habit of putting my ultrabook on bed (vents are blocked) because the fans rarely start. But when it does I make sure to give enough room for fans to work.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://jadia.dev/assets/social-devops-python-preview.png" /><media:content medium="image" url="https://jadia.dev/assets/social-devops-python-preview.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Connecting Google Service Account with Kubernetes Service Account</title><link href="https://jadia.dev/2020/09/10/connecting-google-service-account-with-kubernetes-service-account" rel="alternate" type="text/html" title="Connecting Google Service Account with Kubernetes Service Account" /><published>2020-09-10T14:52:00+00:00</published><updated>2020-09-10T14:52:00+00:00</updated><id>https://jadia.dev/2020/09/10/connecting-google-service-account-with-kubernetes-service-account</id><content type="html" xml:base="https://jadia.dev/2020/09/10/connecting-google-service-account-with-kubernetes-service-account">&lt;h2 id=&quot;3-ways-to-access-a-google-cloud-resource&quot;&gt;3 ways to access a Google Cloud Resource:&lt;/h2&gt;
+
+&lt;p&gt;Your containers and Pods might need access to other resources in Google Cloud. There are three ways to do this.&lt;/p&gt;
+
+&lt;p&gt;Below is a part extracted from the &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/concepts/security-overview#giving_pods_access_to_resources&quot;&gt;Google Docs&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;workload-identity-recommended&quot;&gt;&lt;strong&gt;Workload Identity (recommended)&lt;/strong&gt;&lt;/h3&gt;
+
+  &lt;p&gt;The simplest and most secure way to authorize Pods to access Google Cloud resources is with &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity&quot;&gt;Workload Identity&lt;/a&gt;. Workload identity allows a Kubernetes service account to run as a &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity&quot;&gt;Google Cloud service account&lt;/a&gt;. Pods that run as the Kubernetes service account have the permissions of the Google Cloud service account.&lt;/p&gt;
+
+  &lt;p&gt;Workload Identity can be used with &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/sandbox-pods&quot;&gt;GKE Sandbox&lt;/a&gt;.&lt;/p&gt;
+
+  &lt;h3 id=&quot;node-service-account&quot;&gt;&lt;strong&gt;Node Service Account&lt;/strong&gt;&lt;/h3&gt;
+
+  &lt;p&gt;Your Pods can also authenticate to Google Cloud using the Kubernetes clusters’ &lt;a href=&quot;https://cloud.google.com/compute/docs/access/service-accounts&quot;&gt;service account&lt;/a&gt; credentials from metadata. However, these credentials can be reached by any Pod running in the cluster if Workload Identity is not enabled. Create and configure a custom service account that has the &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/hardening-your-cluster#use_least_privilege_sa&quot;&gt;minimum IAM roles&lt;/a&gt; that are required by all the Pods running in the cluster.&lt;/p&gt;
+
+  &lt;p&gt;This approach is not compatible with &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/sandbox-pods&quot;&gt;GKE Sandbox&lt;/a&gt; because GKE Sandbox blocks access to the metadata server.&lt;/p&gt;
+
+  &lt;h3 id=&quot;service-account-json-key&quot;&gt;&lt;strong&gt;Service Account JSON key&lt;/strong&gt;&lt;/h3&gt;
+
+  &lt;p&gt;A third way to grant credentials for Google Cloud resources to applications is to manually use the &lt;a href=&quot;https://cloud.google.com/iam/docs/creating-managing-service-account-keys&quot;&gt;service account’s key&lt;/a&gt;. This approach is strongly discouraged because of the difficulty of securely managing account keys.&lt;/p&gt;
+
+  &lt;p&gt;You should use &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform&quot;&gt;application-specific Google Cloud service accounts to provide credentials&lt;/a&gt; so that applications have the minimal necessary permissions. Each service account is assigned only the IAM roles that are needed for its paired application to operate successfully. Keeping the service account application-specific makes it easier to revoke its access in the case of a compromise without affecting other applications. Once you have assigned your service account the correct IAM roles, you can create a JSON service account key, and then mount that into your Pod using a Kubernetes &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/concepts/secret&quot;&gt;Secret&lt;/a&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;connecting-google-service-account-with-kubernetes-service-account&quot;&gt;Connecting Google service account with Kubernetes service account&lt;/h2&gt;
+
+&lt;p&gt;This requires Workload identity to work.&lt;/p&gt;
+
+&lt;h1 id=&quot;pre-requisites&quot;&gt;Pre-requisites:&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Google service account with roles required by the application.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;conditions&quot;&gt;Conditions:&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The cluster MUST have workload identity enabled&lt;/li&gt;
+  &lt;li&gt;The node pool’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;workload-metadata&lt;/code&gt; MUST be set as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GKE_METADATA&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GCE_METADATA&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;A binding between the GSA(Google service account) and KSA(Kubernetes service account) MUST exist&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;enable-workload-identity-in-the-gke-cluster&quot;&gt;Enable workload identity in the GKE cluster&lt;/h2&gt;
+
+&lt;p&gt;Source: &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity&quot;&gt;Workload Identity | Kubernetes Engine Documentation | Google Cloud&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;new-cluster&quot;&gt;&lt;strong&gt;New Cluster:&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;jadia-project
+&lt;span class=&quot;nv&quot;&gt;CLUSTER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ptdevops
+
+gcloud container clusters create &lt;span class=&quot;nv&quot;&gt;$CLUSTER_NAME&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--release-channel&lt;/span&gt; regular &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--workload-pool&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PROJECT&lt;/span&gt;.svc.id.goog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;existing-cluster&quot;&gt;&lt;strong&gt;Existing cluster&lt;/strong&gt;:&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;jadia-project
+&lt;span class=&quot;nv&quot;&gt;CLUSTER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;playops
+
+gcloud container clusters update &lt;span class=&quot;nv&quot;&gt;$CLUSTER_NAME&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--workload-pool&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PROJECT_ID&lt;/span&gt;.svc.id.goog
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Source: &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable_on_existing_cluster&quot;&gt;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable_on_existing_cluster&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;or you can go and edit the cluster from web interface and enable &lt;em&gt;workload identity&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Enable workload identity in the node-pool:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Do this to all the node pools in the cluster&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CLUSTER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;playops
+&lt;span class=&quot;nv&quot;&gt;NODE_POOL_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;standard-pool-1
+
+gcloud container node-pools update &lt;span class=&quot;nv&quot;&gt;$NODE_POOL_NAME&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--cluster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CLUSTER_NAME&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--workload-metadata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;GKE_METADATA
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;source: &lt;a href=&quot;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#option_1_node_pool_modification&quot;&gt;https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#option_1_node_pool_modification&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;create-a-binding-between-the-gsa-and-ksa&quot;&gt;Create a binding between the GSA and KSA&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create a GSA with the required roles.&lt;/li&gt;
+  &lt;li&gt;Create KSA  with annotation about the GSA&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;NAMESPACE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;default
+&lt;span class=&quot;nv&quot;&gt;GCLOUD_SERVICE_ACCOUNT_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test-gsa
+&lt;span class=&quot;nv&quot;&gt;PROJECT_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;playops
+&lt;span class=&quot;nv&quot;&gt;KUBE_SERVICE_ACCOUNT_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;k8s-service-account
+
+kubectl annotate serviceaccount &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;--namespace&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$NAMESPACE&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$KUBE_SERVICE_ACCOUNT_NAME&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    iam.gke.io/gcp-service-account&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$GCLOUD_SERVICE_ACCOUNT_NAME&lt;/span&gt;@&lt;span class=&quot;nv&quot;&gt;$PROJECT_NAME&lt;/span&gt;.iam.gserviceaccount.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;or just add annotation as:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;v1&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ServiceAccount&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;annotations&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;iam.gke.io/gcp-service-account&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;test-gsa@playops.iam.gserviceaccount.com&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;k8s-service-account&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create binding&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;NAMESPACE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;default
+&lt;span class=&quot;nv&quot;&gt;KSA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;k8s-service-account
+&lt;span class=&quot;nv&quot;&gt;PROJECT_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;playops
+&lt;span class=&quot;nv&quot;&gt;GSA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;test-gsa@&lt;span class=&quot;nv&quot;&gt;$NAMESPACE&lt;/span&gt;.iam.gserviceaccount.com
+
+gcloud iam service-accounts add-iam-policy-binding &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--role&lt;/span&gt; roles/iam.workloadIdentityUser &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--member&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;serviceAccount:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PROJECT_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.svc.id.goog[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$NAMESPACE&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$KSA&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;]&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$GSA&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;test-if-workload-identity-is-working-or-not&quot;&gt;Test if workload identity is working or not&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;kubectl run &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--image&lt;/span&gt; google/cloud-sdk:slim &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--serviceaccount&lt;/span&gt; k8s-service-account &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--namespace&lt;/span&gt; default workload-identity-test
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Inside the pod&lt;/span&gt;
+gcloud auth list
+
+&lt;span class=&quot;c&quot;&gt;#OUTPUT&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#root@workload-identity-test:/# gcloud auth list&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#              Credentialed Accounts&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#ACTIVE  ACCOUNT&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#*       test-gsa@playops.iam.gserviceaccount.com&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://medium.com/google-cloud/updating-google-container-engine-vm-scopes-with-zero-downtime-50bff87e5f80&quot;&gt;Dinesh, Sandeep. “Updating Google Kubernetes Engine VM Scopes with Zero Downtime.” Medium. Last modified February 6, 2018. Accessed September 10, 2020.&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://dzone.com/articles/enabling-gke-workload-identity&quot;&gt;“Enabling GKE Workload Identity - DZone Cloud.” Dzone.Com. Accessed September 10, 2020&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=2HmDZXbfA80&quot;&gt;“Node Management in GKE (Cloud Next ’19) - YouTube.” Accessed September 10, 2020&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content><author><name>Nitish Jadia</name></author><category term="Kubernetes" /><summary type="html">3 ways to access a Google Cloud Resource: Your containers and Pods might need access to other resources in Google Cloud. There are three ways to do this.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://jadia.dev/assets/social-devops-python-preview.png" /><media:content medium="image" url="https://jadia.dev/assets/social-devops-python-preview.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Using GitLab CI/CD to build and store container images</title><link href="https://jadia.dev/2020/08/25/using-gitlab-ci-cd-to-build-and-store-container-images" rel="alternate" type="text/html" title="Using GitLab CI/CD to build and store container images" /><published>2020-08-25T11:36:00+00:00</published><updated>2020-08-25T11:36:00+00:00</updated><id>https://jadia.dev/2020/08/25/using-gitlab-ci-cd-to-build-and-store-container-images</id><content type="html" xml:base="https://jadia.dev/2020/08/25/using-gitlab-ci-cd-to-build-and-store-container-images">&lt;p&gt;Often building container images consume a lot of bandwidth and back at home I don’t have a good internet connection to build images again and again.&lt;/p&gt;
+
+&lt;p&gt;Also, there are times when I have
+to, again and again, push the container images to Docker hub in a short period. I felt that they tend to slow down the upload speeds when I do this.
+(I’m not sure how accurate is this observation.)&lt;/p&gt;
+
+&lt;p&gt;Instead of Docker Hub to host the repository and building images on my local machine, I thought of using GitLab’s CI/CD to do the job.&lt;/p&gt;
+
+&lt;h3 id=&quot;setting-up-repository-to-build-and-store-container-images&quot;&gt;Setting up repository to build and store container images&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create a new &lt;em&gt;Project&lt;/em&gt; in GitLab. &lt;br /&gt;
+ &lt;img src=&quot;/assets/posts/gitlab_ci_cd/create_project.png&quot; alt=&quot;Create Project in GitLab&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create a new file &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Docker.gitlab-ci.yml&lt;/code&gt; in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; branch as a template
+ to use when we will use CI/CD pipeline to build the docker images.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#Docker.gitlab-ci.yml&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;build:image:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;docker:stable&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;docker:dind&lt;/span&gt;
+
+  &lt;span class=&quot;na&quot;&gt;variables&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;DOCKER_HOST&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tcp://docker:2375&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;DOCKER_DRIVER&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;overlay2&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;hello&lt;/span&gt;                           &lt;span class=&quot;c1&quot;&gt;# CHANGE IMAGE NAME&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;TAG&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;latest&lt;/span&gt;                                 &lt;span class=&quot;c1&quot;&gt;# EDIT TAG&lt;/span&gt;
+
+  &lt;span class=&quot;na&quot;&gt;before_script&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY&lt;/span&gt;
+
+  &lt;span class=&quot;na&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;docker build --pull -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$TAG .&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME:$TAG&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;building-a-container-image&quot;&gt;Building a container Image&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a new branch from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;.
+    &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; git checkout &lt;span class=&quot;nt&quot;&gt;-b&lt;/span&gt; flask-app
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Add required files and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dockerfile&lt;/code&gt; to the branch.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Docker.gitlab-ci.yml&lt;/code&gt; template to create a new
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.gitlab-ci.yml&lt;/code&gt; file which will build the image. &lt;br /&gt;
+  &lt;strong&gt;Remember:&lt;/strong&gt; Change the variable &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IMAGE_NAME&lt;/code&gt; in the yaml file with the name
+  of the image.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Push the changes and naviage to &lt;strong&gt;CI/CD&lt;/strong&gt; and &lt;strong&gt;Container Registry&lt;/strong&gt; section
+ of the project to see the image build and stored images.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I use &lt;a href=&quot;https://gitlab.com/nitishjadia/build&quot;&gt;this GitLab repository&lt;/a&gt; to do the job.
+You can clone it and get started without doing the above steps.&lt;/p&gt;</content><author><name>Nitish Jadia</name></author><category term="CI/CD" /><summary type="html">Often building container images consume a lot of bandwidth and back at home I don’t have a good internet connection to build images again and again.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://jadia.dev/assets/social-devops-python-preview.png" /><media:content medium="image" url="https://jadia.dev/assets/social-devops-python-preview.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Bitcoin Whitepaper</title><link href="https://jadia.dev/2020/07/08/bitcoin-whitepaper" rel="alternate" type="text/html" title="Bitcoin Whitepaper" /><published>2020-07-08T15:12:00+00:00</published><updated>2020-07-08T15:12:00+00:00</updated><id>https://jadia.dev/2020/07/08/bitcoin-whitepaper</id><content type="html" xml:base="https://jadia.dev/2020/07/08/bitcoin-whitepaper">&lt;h2 id=&quot;bitcoin-a-peer-to-peer-electronic-cash-system&quot;&gt;Bitcoin: A Peer-to-Peer Electronic Cash System&lt;/h2&gt;
+
+&lt;h3 id=&quot;introduction&quot;&gt;Introduction&lt;/h3&gt;
+
+&lt;p&gt;Satoshi Nakamoto proposes an overarching solution to double spending problem using a peer-to-peer network which supports an electronic payment system based on cryptographic proof instead of trust unlike the the method used by financial institutions.
+A computational proof of the chronological order of transaction is generated by p2p distributed timestamp server. The reversal of transaction will be computationally impractical unless more than 50% of nodes are not intending to attack the network.&lt;/p&gt;
+
+&lt;h3 id=&quot;transactions&quot;&gt;Transactions&lt;/h3&gt;
+
+&lt;p&gt;Each transaction is clubbed with the hash of the previous transaction and public key of next owner then signed by the person making this transaction. This forms a chain of transactions. This chain of digital signatures are called electronic coin.
+Solving double spending problem without any mediating third-party requires a node to be aware of all the transactions.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The transactions must be publicly announced.&lt;/li&gt;
+  &lt;li&gt;All participants must agree on a single chronological order of all transactions.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;timestamp-server&quot;&gt;Timestamp Server&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/posts/bitcoin-whitepaper/timestamp.png&quot; alt=&quot;Bitcoin timestamp&quot; /&gt;
+Timestamp server generates a hash of the current block, it also includes timestamp of previous block, hence forming a chain.&lt;/p&gt;
+
+&lt;h3 id=&quot;proof-of-work&quot;&gt;Proof of work&lt;/h3&gt;
+
+&lt;p&gt;The Proof-of-Work[PoW] involves guessing a nounce value which can generate a hash which starts with a required amount on zero bits. The block cannot be changed without redoing the work. This implies that to modify a past block, an attacker would have to redo the PoW for that block and all the blocks after it. Average work required is exponential in the number of zero bits required. PoW difficulty increases if blocks are being generated too fast.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Y=H ( X || k )&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;There exist no efficient algorithm to find value of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;k&lt;/code&gt;(nounce).&lt;/p&gt;
+
+&lt;h3 id=&quot;network&quot;&gt;Network&lt;/h3&gt;
+
+&lt;p&gt;New transactions are broadcasted to all nodes, all the nodes collect new transactions into a block and try to find PoW for that block. When PoW is found, the block is broadcasted to all the nodes. The block is accepted by the nodes if all the transactions in the block are valid and not already spent. The hash of the accepted block is considered as previous hash.
+Nodes always consider longest chain to be the correct one and work on extending it.&lt;/p&gt;
+
+&lt;h3 id=&quot;incentive&quot;&gt;Incentive&lt;/h3&gt;
+
+&lt;p&gt;Just like gold miners adding gold to the circulation, the bitcoin miners too get paid as block reward when they are successful in their PoW, that means, with each new block, the bitcoin in the economy increases.The incentive can also be funded with transaction fees.
+The first transaction in a block is a special transaction that starts a new coin owned by the creator of the block.&lt;/p&gt;
+
+&lt;h3 id=&quot;saving-disk-space&quot;&gt;Saving disk space&lt;/h3&gt;
+
+&lt;p&gt;Instead of storing whole Merkle Tree, we can stubbing off the branches off the tree and keeping the block header with no transactions. The hash value in the block header keeps the integrity of all its sub-branches and transactions.&lt;/p&gt;
+
+&lt;h3 id=&quot;payment-verification&quot;&gt;Payment Verification&lt;/h3&gt;
+
+&lt;p&gt;A transaction can be verified by a user without running a full node network. It just has to keep a copy of block headers of the longest PoW chain. The user cannot check for validity of the transaction by himself because he won’t be having all the transactions with himself. He can just see that the transaction is a part of longest chain and this confirms that the transaction is valid. Verification requires executing only single hash.&lt;/p&gt;
+
+&lt;h3 id=&quot;privacy&quot;&gt;Privacy&lt;/h3&gt;
+
+&lt;p&gt;Privacy can be maintained by keeping public keys anonymous. It is advisable to use a new key pair for each transaction to keep them from being linked to a common owner.&lt;/p&gt;
+
+&lt;h3 id=&quot;security&quot;&gt;Security&lt;/h3&gt;
+
+&lt;p&gt;An attack can only try to change one of his own transactions to take back money he recently spent. The probability of a survival of a dishonest chain is fairly low.&lt;/p&gt;</content><author><name>Nitish Jadia</name></author><category term="Blockchain" /><category term="Whitepapers" /><summary type="html">Bitcoin: A Peer-to-Peer Electronic Cash System</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://jadia.dev/assets/social-devops-python-preview.png" /><media:content medium="image" url="https://jadia.dev/assets/social-devops-python-preview.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
