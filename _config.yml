@@ -153,7 +153,6 @@ exclude:
   - Dockerfile
   - README.md
   - .github
-  - .travis.yml
 
 # Google Analytics
 google_analytics: UA-61932410-4

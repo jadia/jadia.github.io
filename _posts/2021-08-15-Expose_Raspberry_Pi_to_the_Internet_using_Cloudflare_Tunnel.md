@@ -1,5 +1,5 @@
 ---
-layout: post
+
 title: Expose Raspberry Pi to the Internet using Cloudflare Tunnel
 date: 2021-08-15 19:00 +0530
 description: 

@@ -1,5 +1,5 @@
 ---
-layout: post
+
 title: Bitcoin Whitepaper
 description: Summary of Bitcoin Whitepaper published by Satoshi Nakamoto
 tags:
