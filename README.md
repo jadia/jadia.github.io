@@ -5,7 +5,6 @@ I am thankful to [Ioannis Diamantidis](https://twitter.com/diamantidis_io) for m
 
 
 [![Jekyll](https://img.shields.io/badge/powered%20by-jekyll-blue)](https://jekyllrb.com/) 
-[![Build Status](https://travis-ci.org/jadia/jadia.github.io.svg?branch=source)](https://travis-ci.org/jadia/jadia.github.io) 
 ![CI](https://github.com/jadia/jadia.github.io/workflows/CI/badge.svg) 
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/jadia/jadia.github.io/blob/source/LICENSE)  
 <!-- [![Twitter: @diamantidis_io](https://img.shields.io/badge/twitter-@diamantidis_io-blue.svg?style=flat)](https://twitter.com/diamantidis_io) -->
@@ -21,7 +20,7 @@ This blog is built with [Jekyll], an open source static site generator. The cont
 
 The repository has two main branches: [`source`] and [`master`]. The `source` branch contains the Jekyll project while the `master` branch contains the final version of the site, as it is served on [`jadia.dev`].
 
-On every PR against the `source` branch, a `Travis CI` job runs using [Danger] and [Danger-prose] to perform a check for typos and lint prose. When the PR is approved and merged to `source`, a  `GitHub Actions` workflow builds the Jekyll project and push the generated site onto the `master` branch. 
+On every PR against the `source` branch, a `GitHub Actions` workflow builds the site, runs regression tests against generated HTML, and runs [Danger] and [Danger-prose] for prose checks. When changes are merged to `source`, a dedicated `GitHub Pages` workflow builds the site and deploys the generated artifact.
 
 ## How to setup locally
 
@@ -29,7 +28,7 @@ On every PR against the `source` branch, a `Travis CI` job runs using [Danger] a
 
 #### Requirements
 * [Git]
-* [Ruby]
+* [Ruby] 3.1+
 * [Bundler]
 
 #### Steps
@@ -37,10 +36,18 @@ On every PR against the `source` branch, a `Travis CI` job runs using [Danger] a
 ```
 git clone -b source https://github.com/jadia/jadia.github.io.git jadia.dev
 cd jadia.dev
-docker build -t bundle .
-docker run --rm -ti -v $(pwd):/work -p 4000:4000 bundle
+bundle install
+bundle exec jekyll serve
 ```
 * Open [`http://127.0.0.1:4000`] in your favorite browser
+
+The repository also contains `diamantidis.github.io/`, which is a local reference clone of the upstream project used for comparison during refactors.
+
+To run the regression suite locally:
+
+```bash
+bundle exec ruby -Itest test/site_render_test.rb
+```
 
 The content also supports emojis. Refer to this cheatsheet: [https://www.webfx.com/tools/emoji-cheat-sheet/](https://www.webfx.com/tools/emoji-cheat-sheet/)
 

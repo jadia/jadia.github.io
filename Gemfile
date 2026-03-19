@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
-gem 'jekyll', "~> 3.8.5"
+ruby ">= 3.1.0"
+
+gem 'jekyll', "~> 3.10.0"
 gem 'danger'
 gem 'danger-prose'
 
@@ -9,15 +11,15 @@ gem "minima", "~> 2.5.1"
 
 # If you have any plugins, put them here!
 group :jekyll_plugins do
-  gem "jekyll-feed", "~> 0.9"
-  gem "jemoji", "~> 0.11.1"
+  gem "jekyll-feed", "~> 0.17.0"
+  gem "jemoji", "~> 0.13.0"
   gem "jekyll-sitemap", "~> 1.4.0"
-  gem "github-pages", "~> 205"
+  gem "github-pages", "~> 232"
   gem "jekyll-paginate-v2"
-  # Nitish's custom gem
-  gem "jekyll-compose"
   gem "jekyll-redirect-from"
+  gem "jekyll-compose"
 end
 
-# Fix missing gem
-gem 'zeitwerk', "~> 2.3.0"
+group :test do
+  gem "minitest"
+end

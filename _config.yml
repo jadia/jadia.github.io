@@ -28,7 +28,8 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-sitemap
-  - jekyll-paginate
+  - jekyll-paginate-v2
+  - jekyll-redirect-from
 
 sass:
   sass_dir: _scss
@@ -54,7 +55,17 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+  - .bundle
   - Dangerfile
+  - docs
+  - test
+  - tmp
+  - diamantidis.github.io
+  - drafts_future
+  - Dockerfile
+  - README.md
+  - .github
+  - .travis.yml
 
 # Google Analytics
 google_analytics: UA-61932410-4
