@@ -1,0 +1,25 @@
+{% assign item = include.item %}
+{% capture full_url %}{{ site.url }}{{ site.baseurl }}{{ item.url }}{% endcapture %}
+<section class="share-panel">
+  <p class="share-title">Share this</p>
+  <div class="share-links">
+    <a class="share-link" href="https://twitter.com/share?text={{ item.title | cgi_escape }}&url={{ full_url | cgi_escape }}" target="_blank" rel="noreferrer" aria-label="Share on Twitter">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18.9 2H22l-6.7 7.6L23 22h-6l-4.7-6.8L6.4 22H3.3l7.2-8.2L1 2h6.1l4.2 6.1L18.9 2zm-1.1 18h1.7L6.3 3.9H4.5L17.8 20z"></path>
+      </svg>
+      <span>Twitter</span>
+    </a>
+    <a class="share-link" href="https://www.linkedin.com/shareArticle?mini=true&url={{ full_url | cgi_escape }}" target="_blank" rel="noreferrer" aria-label="Share on LinkedIn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6.8 8.6H3.3V20h3.5V8.6zm.2-3.5a2 2 0 1 0-4 0 2 2 0 0 0 4 0zM20.7 13.5c0-3.2-1.7-5.3-4.6-5.3-2.1 0-3 .9-3.5 1.5v-1.2H9.2c.1.8 0 11.5 0 11.5h3.5v-6.4c0-.3 0-.7.1-.9.3-.7 1-1.5 2.2-1.5 1.5 0 2.1 1.2 2.1 3V20h3.5v-6.5z"></path>
+      </svg>
+      <span>LinkedIn</span>
+    </a>
+    <a class="share-link" href="mailto:?subject={{ item.title | cgi_escape }}&body={{ full_url | cgi_escape }}" aria-label="Share by Email">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2.5 6.5h19v11h-19v-11zm1.7 1.5L12 13.3 19.8 8H4.2zm15.8 8V9.3l-7.5 5-7.5-5V16h15z"></path>
+      </svg>
+      <span>Email</span>
+    </a>
+  </div>
+</section>

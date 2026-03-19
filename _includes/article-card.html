@@ -1,0 +1,24 @@
+{% assign item = include.item %}
+{% assign summary = item.summary | default: item.description | default: item.excerpt | strip_html | strip %}
+<article class="content-card{% if include.compact %} content-card--compact{% endif %}">
+  {% include article-meta.html item=item %}
+  <h3 class="content-card-title">
+    <a href="{{ item.url | relative_url }}">{{ item.title | escape }}</a>
+  </h3>
+  {% if summary != "" %}
+    <p class="content-card-summary">
+      {% if include.compact %}
+        {{ summary | truncate: 110 }}
+      {% else %}
+        {{ summary | truncate: 180 }}
+      {% endif %}
+    </p>
+  {% endif %}
+  {% if item.tags and item.tags.size > 0 %}
+    <div class="tag-row">
+      {% for tag in item.tags limit:3 %}
+        <a class="tag-chip" href="{{ '/tags' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</article>

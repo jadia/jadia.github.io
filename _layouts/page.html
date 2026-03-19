@@ -1,16 +1,18 @@
 ---
 layout: default
 ---
-<article class="page">
-
-  <header class="page-header">
-  	<h1>
-      <span class="page-title">{{ page.title | escape }}</span>
-    </h1>
+<article class="page-shell">
+  <header class="section-heading section-heading--page">
+    <p class="section-kicker">Page</p>
+    <h1>{{ page.title | escape }}</h1>
+    {% assign page_summary = page.description | default: page.summary %}
+    {% if page_summary %}
+      <p>{{ page_summary }}</p>
+    {% endif %}
   </header>
-
-  <div class="page-content">
-    {{ content }}
+  <div class="page-body-shell">
+    <div class="article-content page-body">
+      {{ content }}
+    </div>
   </div>
-
 </article>

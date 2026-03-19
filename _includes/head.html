@@ -4,22 +4,85 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   {%- capture site_title -%}
-      {%if page.title %}
-         {{ page.title }}
-     {% else %}
-         {{ site.title }}
-     {% endif %}
+    {% if page.title %}
+      {{ page.title }}
+    {% else %}
+      {{ site.title }}
+    {% endif %}
   {%- endcapture -%}
   <title>{{ site_title | strip }}</title>
 
   {%- seo title=false -%}
-  
-  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
-  
-  {%- include favicon.html -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="{{ site.design.typography.google_fonts_url }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+  <style>
+    :root {
+      --font-display: {{ site.design.typography.display }};
+      --font-ui: {{ site.design.typography.ui }};
+      --font-body: {{ site.design.typography.body }};
+      --font-code: {{ site.design.typography.code }};
+      --shell-width: {{ site.design.layout.shell_width }};
+      --content-width: {{ site.design.layout.content_width }};
+      --header-mobile-right-clearance: {{ site.design.header.mobile.right_clearance }};
+      --header-mobile-actions-right: {{ site.design.header.mobile.actions_right }};
+      --header-mobile-actions-top: {{ site.design.header.mobile.actions_top }};
+      --header-mobile-shell-padding-left: {{ site.design.header.mobile.shell_padding_left }};
+      --header-mobile-shell-padding-right: {{ site.design.header.mobile.shell_padding_right }};
+      --selection-text: {{ site.design.interaction.selection.text }};
+      --selection-accent-mix: {{ site.design.interaction.selection.accent_mix }};
+      --selection-highlight-mix: {{ site.design.interaction.selection.highlight_mix }};
+      --bg: {{ site.design.palette.light.bg }};
+      --surface: {{ site.design.palette.light.surface }};
+      --surface-soft: {{ site.design.palette.light.surface_soft }};
+      --surface-strong: {{ site.design.palette.light.surface_strong }};
+      --border: {{ site.design.palette.light.border }};
+      --text: {{ site.design.palette.light.text }};
+      --text-soft: {{ site.design.palette.light.text_soft }};
+      --heading: {{ site.design.palette.light.heading }};
+      --accent: {{ site.design.palette.light.accent }};
+      --accent-strong: {{ site.design.palette.light.accent_strong }};
+      --accent-soft: {{ site.design.palette.light.accent_soft }};
+      --accent-glow: {{ site.design.palette.light.accent_glow }};
+      --code-bg: {{ site.design.palette.light.code_bg }};
+      --code-border: {{ site.design.palette.light.code_border }};
+      --track: {{ site.design.palette.light.track }};
+      --highlight: {{ site.design.palette.light.highlight }};
+    }
 
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    [data-theme="dark"] {
+      --bg: {{ site.design.palette.dark.bg }};
+      --surface: {{ site.design.palette.dark.surface }};
+      --surface-soft: {{ site.design.palette.dark.surface_soft }};
+      --surface-strong: {{ site.design.palette.dark.surface_strong }};
+      --border: {{ site.design.palette.dark.border }};
+      --text: {{ site.design.palette.dark.text }};
+      --text-soft: {{ site.design.palette.dark.text_soft }};
+      --heading: {{ site.design.palette.dark.heading }};
+      --accent: {{ site.design.palette.dark.accent }};
+      --accent-strong: {{ site.design.palette.dark.accent_strong }};
+      --accent-soft: {{ site.design.palette.dark.accent_soft }};
+      --accent-glow: {{ site.design.palette.dark.accent_glow }};
+      --code-bg: {{ site.design.palette.dark.code_bg }};
+      --code-border: {{ site.design.palette.dark.code_border }};
+      --track: {{ site.design.palette.dark.track }};
+      --highlight: {{ site.design.palette.dark.highlight }};
+    }
+  </style>
+  {%- include favicon.html -%}
   {%- feed_meta -%}
+  <script>
+    (function() {
+      try {
+        var stored = localStorage.getItem("jadia-theme");
+        var theme = stored || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (error) {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
+    })();
+  </script>
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
   {%- endif -%}

@@ -1,84 +1,114 @@
-# [jadia.dev](https://jadia.dev) 
+# jadia.dev
 
-The blog theme is a fork of [diamantidis.github.io](https://diamantidis.github.io). 
-I am thankful to [Ioannis Diamantidis](https://twitter.com/diamantidis_io) for making the blog code open source. All the credit for initial repository setup goes to him.
+`jadia.dev` is a Jekyll-based technical writing site focused on chronological technical posts. The site is statically generated and deployed with GitHub Pages.
 
+## Stack
 
-[![Jekyll](https://img.shields.io/badge/powered%20by-jekyll-blue)](https://jekyllrb.com/) 
-[![Build Status](https://travis-ci.org/jadia/jadia.github.io.svg?branch=source)](https://travis-ci.org/jadia/jadia.github.io) 
-![CI](https://github.com/jadia/jadia.github.io/workflows/CI/badge.svg) 
-[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/jadia/jadia.github.io/blob/source/LICENSE)  
-<!-- [![Twitter: @diamantidis_io](https://img.shields.io/badge/twitter-@diamantidis_io-blue.svg?style=flat)](https://twitter.com/diamantidis_io) -->
+- Ruby `3.1+`
+- Jekyll `3.10`
+- GitHub Pages gem set
+- Sass for the design system
+- Small vanilla JavaScript modules for search, theme toggle, TOC, and code-copy UX
+- GitHub Actions for CI and deployment
 
-This is the repository for my [personal blog]. 
+## Content model
 
-The whole site is open source, meaning that all the code that runs on the live site is here. 
+- `posts`: all published content in [`_posts`](/home/nitish/workspace/jadia.dev/_posts)
 
+Legacy routes such as `/til`, `/howto`, `/notes`, `/guides`, and `/posts` are retained as redirects to `/archive` for compatibility.
 
-## Under the hood
+## Local development
 
-This blog is built with [Jekyll], an open source static site generator. The content is written in [Markdown] files, which Jekyll turns into HTML. The site is hosted on [GitHub Pages], a free web hosting service provided by [GitHub]. 
+### Using Docker (Primary Method)
 
-The repository has two main branches: [`source`] and [`master`]. The `source` branch contains the Jekyll project while the `master` branch contains the final version of the site, as it is served on [`jadia.dev`].
+The easiest way to run the site locally is using Docker.
 
-On every PR against the `source` branch, a `Travis CI` job runs using [Danger] and [Danger-prose] to perform a check for typos and lint prose. When the PR is approved and merged to `source`, a  `GitHub Actions` workflow builds the Jekyll project and push the generated site onto the `master` branch. 
+```bash
+docker build -t jadia-dev .
+docker run --rm -ti -v $(pwd):/work -p 4000:4000 jadia-dev
+```
 
-## How to setup locally
+The local site will be available at `http://127.0.0.1:4000`.
 
-### The Jekyll project
+#### Run build checks in Docker
+
+```bash
+docker build -t jadia-dev-test .
+docker run --rm -v $(pwd):/work -w /work jadia-dev-test bundle exec jekyll build --trace
+docker run --rm -v $(pwd):/work -w /work jadia-dev-test bundle exec ruby -Itest test/site_render_test.rb
+```
+
+#### Run any Bundler command in Docker
+
+```bash
+docker run --rm -v $(pwd):/work -w /work jadia-dev-test bundle exec <command>
+```
+
+### Using local Ruby
 
 #### Requirements
-* [Git]
-* [Ruby]
-* [Bundler]
 
-#### Steps
-* Run the following commands:
+- Ruby `3.1+`
+- Bundler
+
+#### Install dependencies
+
+```bash
+bundle install
 ```
-git clone -b source https://github.com/jadia/jadia.github.io.git jadia.dev
-cd jadia.dev
-docker build -t bundle .
-docker run --rm -ti -v $(pwd):/work -p 4000:4000 bundle
+
+#### Run the site
+
+```bash
+bundle exec jekyll serve
 ```
-* Open [`http://127.0.0.1:4000`] in your favorite browser
 
-The content also supports emojis. Refer to this cheatsheet: [https://www.webfx.com/tools/emoji-cheat-sheet/](https://www.webfx.com/tools/emoji-cheat-sheet/)
+The local site will be available at `http://127.0.0.1:4000`.
 
-## Contributing
+### Run the regression suite (local Ruby)
 
-#### Fix Content
-If you see an error, a typo or something wrong in the content, just fork the repository, make the change and submit a pull request against the [`source`] branch. Alternatively, you can file an [issue] or message me on [Twitter].
+```bash
+bundle exec ruby -Itest test/site_render_test.rb
+```
 
-#### Ideas, suggestions and improvements
-If you have any suggestion for a potential post, an improvement on the blog or some other idea, please share it with me. You can either file an [issue] or send me a message on [Twitter].
+## Authoring workflow
 
-## License
+The recommended way to create content is the helper script in [`bin/new-content`](/home/nitish/workspace/jadia.dev/bin/new-content).
 
-This project is licensed under the terms of the MIT license. See the [LICENSE] file.
+### Create a post
 
+```bash
+bin/new-content post "Your title"
+```
 
-## Contact me
+### Create a note
 
-* [Twitter]
-* [LinkedIn]
-* [Email]
+```bash
+bin/new-content note "Your title"
+```
 
+### Create a guide
 
-[personal blog]: https://jadia.github.io
-[Jekyll]: https://jekyllrb.com/
-[Markdown]: https://daringfireball.net/projects/markdown/
-[GitHub Pages]: https://pages.github.com/
-[GitHub]: https://github.com/
-[`source`]: https://github.com/jadia/jadia.github.io/tree/source
-[`master`]: https://github.com/jadia/jadia.github.io/tree/master
-[`jadia.dev`]: https://jadia.dev
-[Danger]: https://github.com/danger/danger
-[Danger-prose]: https://github.com/dbgrandi/danger-prose
-[Git]: https://git-scm.com/
-[Ruby]: https://www.ruby-lang.org/en/
-[Bundler]: https://bundler.io/
-[`http://127.0.0.1:4000`]: http://127.0.0.1:4000
-[issue]: https://github.com/jadia/jadia.github.io/issues/new
-[LICENSE]: LICENSE
-[Twitter]: https://twitter.com/nitishjadia
-[LinkedIn]: https://linkedin.com/in/jadianitish
+```bash
+bin/new-content guide "Your title"
+```
+
+The script creates the file in the correct collection, fills in standard front matter, and marks the draft as `true` by default.
+
+## Build and deployment flow
+
+- CI runs on pushes and pull requests to `source`
+- CI builds the site and runs generated-site regression tests
+- GitHub Pages deployment builds from `source` and publishes the generated `_site` artifact
+
+> **Note:** The CI pipelines use `ruby/setup-ruby` directly on GitHub Actions runners. They do not build or test the local `Dockerfile`, which is why Docker-specific build errors are not caught by the regression suite. The Docker setup is currently provided purely as a convenience for local development.
+
+Workflow definitions live in:
+
+- [`.github/workflows/ci.yml`](/home/nitish/workspace/jadia.dev/.github/workflows/ci.yml)
+- [`.github/workflows/github-pages.yml`](/home/nitish/workspace/jadia.dev/.github/workflows/github-pages.yml)
+
+## Repository notes
+
+- [`docs/refactor-review.md`](/home/nitish/workspace/jadia.dev/docs/refactor-review.md) records the refactor findings and direction
+- Site configuration lives in [`_config.yml`](/home/nitish/workspace/jadia.dev/_config.yml)

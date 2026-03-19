@@ -2,6 +2,7 @@
 layout: page
 title: Uses
 permalink: /uses
+description: Hardware, software, and tools I use for work and life.
 ---
 
 A collection of tools I use to make my life and work simple.

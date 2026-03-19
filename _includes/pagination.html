@@ -1,0 +1,13 @@
+{% assign pager = include.paginator %}
+{% if pager and pager.total_pages > 1 %}
+  <nav class="pagination-nav" aria-label="Pagination">
+    {% if pager.previous_page %}
+      <a class="button button-secondary" href="{{ pager.previous_page_path | prepend: site.baseurl }}">Newer</a>
+    {% else %}
+      <span></span>
+    {% endif %}
+    {% if pager.next_page %}
+      <a class="button button-secondary" href="{{ pager.next_page_path | prepend: site.baseurl }}">Older</a>
+    {% endif %}
+  </nav>
+{% endif %}

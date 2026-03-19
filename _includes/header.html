@@ -1,49 +1,49 @@
 <header class="site-header" role="banner">
-    <div class="wrapper">
-        {%- assign default_paths = site.pages | map: "path" -%}
-        {%- assign page_paths = site.header_pages | default: default_paths -%}
-        <div class="left-container">
-            <div class="title-wrapper">
-                <a class="site-title" rel="author" href="{{ "/" | relative_url }}">
-                    <h1>{{ site.title | escape }}</h1>
-                </a>
-            </div>
-            <div class="footer-icons">
-                <ul>
-                    {% assign dimension = "sm" %}
-                    {% include icons.html %}
-                </ul>
-            </div>
-        </div>
+  <div class="shell shell-header">
+    <a class="site-brand" rel="author" href="{{ '/' | relative_url }}" aria-label="{{ site.title | escape }}">
+      <span class="site-brand-mark">
+        <img src="{{ site.logo | relative_url }}" alt="" loading="eager" decoding="async">
+      </span>
+      <span class="site-brand-copy">
+        <strong>{{ site.title | escape }}</strong>
+        <span>{{ site.branding.nav_tagline }}</span>
+      </span>
+    </a>
 
-        {%- if page_paths -%}
-        <nav class="site-nav">
-            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-            <label for="nav-trigger">
-                <span class="menu-icon">
-                    <svg viewBox="0 0 18 15" width="18px" height="15px">
-                        <path
-                            d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z" />
-                    </svg>
-                </span>
-            </label>
-
-            <div class="trigger">
-                <!-- <a class="page-link" href="/til" title="Today I Learned">Today I Learned</a>
-                <a class="page-link" href="/howto" title="How To">How To</a> -->
-                <a class="page-link" href="/uses" title="Uses">Uses</a>
-                {%- for path in page_paths -%}
-                {%- assign my_page = site.pages | where: "path", path | first -%}
-                {% unless my_page.exclude %}
-
-                {%- if my_page.title -%}
-                <a class="page-link" href="{{ my_page.url | relative_url }}"
-                    title="{{ my_page.title | escape }}">{{ my_page.title | escape }}</a>
-                {%- endif -%}
-                {% endunless %}
-                {%- endfor -%}
-            </div>
-        </nav>
-        {%- endif -%}
+    <div class="header-actions">
+      <div class="header-search" data-header-search>
+        <button class="header-search-toggle" type="button" aria-label="Open article search" title="Search articles" data-header-search-toggle>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M16 16l4.5 4.5"></path>
+          </svg>
+          <span class="sr-only">Open search</span>
+        </button>
+        <form class="header-search-form" action="{{ '/search/' | relative_url }}" method="get" role="search">
+          <label class="sr-only" for="header-search-input">Search articles</label>
+          <input id="header-search-input" class="header-search-input" name="q" type="search" placeholder="{{ site.branding.search_prompt }}" autocomplete="off" data-header-search-input>
+        </form>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme" data-theme-toggle>
+        <span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4.2"></circle>
+            <path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9L5.3 5.3"></path>
+          </svg>
+        </span>
+        <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 14.2A8.5 8.5 0 0 1 9.8 4 9 9 0 1 0 20 14.2z"></path>
+          </svg>
+        </span>
+        <span class="sr-only">Toggle color theme</span>
+      </button>
     </div>
+
+    <nav class="site-nav" aria-label="Primary navigation">
+      {% for item in site.navigation.primary %}
+        <a class="page-link" href="{{ item.url | relative_url }}">{{ item.title }}</a>
+      {% endfor %}
+    </nav>
+  </div>
 </header>

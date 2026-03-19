@@ -1,17 +1,22 @@
 <footer class="site-footer">
-    <data class="u-url" href="{{ "/" | relative_url }}"></data>
-
-    <div class="footer-icons">
-        <ul>
-            {% assign dimension = "lg" %}
-            {% include icons.html %}
-        </ul>
+  <div class="shell footer-shell">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <p class="footer-title">{{ site.title }}</p>
+        <p class="footer-copy">{{ site.branding.nav_tagline }}</p>
+      </div>
+      <div class="footer-links">
+        <a href="{{ '/archive' | relative_url }}">Archive</a>
+        <a href="{{ '/search' | relative_url }}">Search</a>
+        <a href="{{ '/tags' | relative_url }}">Tags</a>
+        <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+      </div>
+      <div class="footer-meta">
+        {% include icons.html %}
+      </div>
     </div>
-    <div class="wrapper">
-        <p>Built with
-            <i class="fa fa-heart" aria-hidden="true"></i>, <a href="https://jekyllrb.com/">Jekyll</a> and <a
-                href="https://pages.github.com/"> Github Pages</a>
-        </p>
-        <p> © Copyright {{ site.time | date: '%Y' }} {{ site.author.name }} </p>
+    <div class="footer-bottom">
+      <p>Made with <span class="footer-heart" aria-hidden="true">❤</span> using Jekyll and GitHub Pages. © {{ site.time | date: '%Y' }} {{ site.author.name }}.</p>
     </div>
+  </div>
 </footer>

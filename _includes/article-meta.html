@@ -1,0 +1,20 @@
+{% assign item = include.item %}
+{% assign reading_words = item.content | number_of_words %}
+<div class="article-meta">
+  {% if item.date %}
+    <span>{{ item.date | date: "%B %-d, %Y" }}</span>
+  {% endif %}
+  {% unless reading_words contains "-" %}
+    <span>{{ reading_words | plus: 220 | divided_by: 220 }} min read</span>
+  {% endunless %}
+  {% if item.updated_at %}
+    <span>Updated {{ item.updated_at | date: "%B %-d, %Y" }}</span>
+  {% endif %}
+</div>
+{% if include.show_tags and item.tags and item.tags.size > 0 %}
+  <div class="tag-row">
+    {% for tag in item.tags %}
+      <a class="tag-chip" href="{{ '/tags' | relative_url }}#{{ tag | slugify }}">{{ tag }}</a>
+    {% endfor %}
+  </div>
+{% endif %}

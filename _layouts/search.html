@@ -1,0 +1,28 @@
+---
+layout: default
+---
+<section class="search-page">
+  <header class="section-heading section-heading--page">
+    <p class="section-kicker">Search</p>
+    <h1>{{ page.title }}</h1>
+    <p>{{ page.description }}</p>
+  </header>
+
+  <div class="search-shell" data-search-root data-search-index="{{ '/search.json' | relative_url }}">
+    <form class="search-form" role="search">
+      <label class="sr-only" for="site-search-input">Search the site</label>
+      <div class="search-input-wrap">
+        <span class="search-input-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="6.5"></circle>
+            <path d="M16 16l4.5 4.5"></path>
+          </svg>
+        </span>
+        <input id="site-search-input" class="search-input" type="search" placeholder="{{ site.branding.search_prompt }}" autocomplete="off" data-search-input>
+      </div>
+    </form>
+
+    <div class="search-status" data-search-status>Type to search the site.</div>
+    <div class="search-results" data-search-results></div>
+  </div>
+</section>
