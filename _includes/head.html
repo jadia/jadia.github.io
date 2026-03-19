@@ -20,8 +20,13 @@
   <noscript>
     <link href="{{ site.design.typography.google_fonts_url }}" rel="stylesheet">
   </noscript>
-  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
   <style>
+    {% capture scss %}
+      @import "{{ site.theme }}";
+      @import "custom";
+    {% endcapture %}
+    {{ scss | scssify | strip }}
+
     :root {
       --font-display: {{ site.design.typography.display }};
       --font-ui: {{ site.design.typography.ui }};

@@ -49,7 +49,10 @@ module SiteBuildHelper
   end
 
   def text_for_css
-    File.read(File.join(build_site, "assets", "main.css"))
+    # CSS is now natively inlined into the <head> to eliminate render-blocking penalties.
+    # We strictly extract it dynamically from the root index document.
+    document = Nokogiri::HTML(File.read(File.join(build_site, "index.html")))
+    document.css("style").map(&:text).join("\n")
   end
 
   def json_for(*segments)
