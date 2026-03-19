@@ -95,9 +95,9 @@ This command will automatically generate a new markdown file named tightly with 
 
 ## Build and deployment flow
 
-- CI runs on pushes and pull requests to `source`
+- CI runs on pushes and pull requests to `master`
 - CI builds the site and runs generated-site regression tests
-- GitHub Pages deployment builds from `source` and publishes the generated `_site` artifact
+- GitHub Pages deployment builds from `master` and publishes the generated `_site` artifact
 
 > **Note:** The CI pipelines use `ruby/setup-ruby` directly on GitHub Actions runners. They do not build or test the local `Dockerfile`, which is why Docker-specific build errors are not caught by the regression suite. The Docker setup is currently provided purely as a convenience for local development.
 
