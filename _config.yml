@@ -6,7 +6,7 @@ url: "https://jadia.dev"
 permalink: /:year/:month/:day/:title/
 
 # Logo & images
-logo: /circle-cropped.png
+logo: /assets/images/me_circle_cropped.webp
 branding:
   tagline: Technical blog
   nav_tagline: backend systems, platform engineering, and software delivery

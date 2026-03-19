@@ -2,7 +2,7 @@
 
 ## Daily Loop
 
-1. Pull latest `source`.
+1. Pull latest `master`.
 2. Build/update local tool image: `docker build -t jadia-dev-test .`
 3. Start server with Docker:
    - `docker run --rm -ti -v $(pwd):/work -w /work -p 4000:4000 jadia-dev-test bundle exec jekyll serve --host=0.0.0.0 --livereload`

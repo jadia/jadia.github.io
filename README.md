@@ -1,6 +1,8 @@
 # jadia.dev
 
-`jadia.dev` is a Jekyll-based technical writing site focused on chronological technical posts. The site is statically generated and deployed with GitHub Pages.
+
+`jadia.dev` is a Jekyll-based personal technical writing blog focused on chronological technical posts, hosted securely by GitHub Pages.
+
 
 ## Stack
 
@@ -13,7 +15,7 @@
 
 ## Content model
 
-- `posts`: all published content in [`_posts`](/home/nitish/workspace/jadia.dev/_posts)
+- `posts`: all published content in [`_posts`](./_posts)
 
 Legacy routes such as `/til`, `/howto`, `/notes`, `/guides`, and `/posts` are retained as redirects to `/archive` for compatibility.
 
@@ -103,10 +105,10 @@ This command will automatically generate a new markdown file named tightly with 
 
 Workflow definitions live in:
 
-- [`.github/workflows/ci.yml`](/home/nitish/workspace/jadia.dev/.github/workflows/ci.yml)
-- [`.github/workflows/github-pages.yml`](/home/nitish/workspace/jadia.dev/.github/workflows/github-pages.yml)
+- [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
+- [`.github/workflows/github-pages.yml`](./.github/workflows/github-pages.yml)
 
 ## Repository notes
 
-- [`docs/refactor-review.md`](/home/nitish/workspace/jadia.dev/docs/refactor-review.md) records the refactor findings and direction
-- Site configuration lives in [`_config.yml`](/home/nitish/workspace/jadia.dev/_config.yml)
+- [`docs/refactor-review.md`](./docs/refactor-review.md) records the refactor findings and direction
+- Site configuration lives in [`_config.yml`](./_config.yml)
