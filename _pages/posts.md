@@ -1,4 +1,4 @@
 ---
-permalink: /til
+permalink: /posts
 redirect_to: /archive
 ---

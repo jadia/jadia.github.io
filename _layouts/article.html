@@ -1,0 +1,32 @@
+---
+layout: default
+---
+<article class="article-shell">
+  <header class="article-header">
+    {% include article-meta.html item=page show_tags=true %}
+    <h1 class="article-title">{{ page.title | escape }}</h1>
+  </header>
+
+  <div class="article-layout">
+    <aside class="article-aside">
+      <div class="toc-card">
+        <p class="toc-title">On this page</p>
+        <nav class="article-toc js-article-toc" aria-label="Table of contents"></nav>
+      </div>
+    </aside>
+
+    <div class="article-main">
+      <div class="article-content js-article-content">
+        {{ content }}
+      </div>
+
+      {% include share-links.html item=page %}
+
+      {% include related-content.html item=page %}
+
+      {% if site.disqus.shortname and page.comments != false %}
+        {% include disqus_comments.html %}
+      {% endif %}
+    </div>
+  </div>
+</article>

@@ -2,6 +2,7 @@
 layout: page
 title: About
 permalink: /about
+description: Who I am, what I work on, and why this site exists.
 ---
 
 Hi! I’m Nitish Jadia, currently working at [Invesco (India)](https://www.linkedin.com/company/invesco-ltd) as a full-stack developer where I enjoy solving problems - big or small and love being involved in every part of the product development. I mostly write Python and love working on APIs and DevOps-y stuff.   

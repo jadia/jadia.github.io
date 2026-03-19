@@ -3,21 +3,21 @@ layout: compress
 ---
 
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: "en" }}">
-
+<html lang="{{ page.lang | default: site.lang | default: "en" }}" data-theme="light">
   {%- include head.html -%}
-
   <body>
-
-    {%- include header.html -%}
-
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        {{ content }}
+    <div class="site-shell">
+      {%- include header.html -%}
+      <div class="reading-progress" data-reading-progress>
+        <span class="reading-progress-bar" data-reading-progress-bar></span>
       </div>
-    </main>
-
-    {%- include footer.html -%}
+      <main class="page-content" aria-label="Content">
+        <div class="shell">
+          {{ content }}
+        </div>
+      </main>
+      {%- include footer.html -%}
+    </div>
+    <script src="{{ '/assets/main.js' | relative_url }}" defer></script>
   </body>
-
 </html>

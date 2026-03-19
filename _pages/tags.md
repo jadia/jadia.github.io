@@ -2,82 +2,42 @@
 layout: page
 title: Tags
 permalink: /tags
+description: Browse technical posts by topic.
 ---
 
-{% assign til_tags =  site.til | map: 'tags' | uniq %}
-{% assign howto_tags =  site.howto | map: 'tags' | uniq %}
+{% assign all_content = site.posts | sort: "date" | reverse %}
+{% assign all_tags = "" | split: "" %}
+{% for entry in all_content %}
+  {% assign all_tags = all_tags | concat: entry.tags %}
+{% endfor %}
+{% assign tag_words = all_tags | uniq | sort %}
 
-{%- capture site_tags -%}
-  {%- for tag in site.tags -%}
-    {{ tag | first }}{% unless forloop.last %},{%- endunless -%}
+<div class="tag-cloud">
+  {% for tag in tag_words %}
+    {% assign tag_count = 0 %}
+    {% for entry in all_content %}
+      {% if entry.tags contains tag %}
+        {% assign tag_count = tag_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+    <a class="tag-chip" href="#{{ tag | slugify }}">{{ tag }} <span>{{ tag_count }}</span></a>
   {% endfor %}
-{%- endcapture -%}
-
-{% assign post_tags = site_tags | split: ',' | sort %}
-
-{% assign tag_words2 = post_tags | concat: til_tags | uniq %}
-
-{% assign tag_words = tag_words2 | concat: howto_tags | uniq %}
-
-{% assign grouped_til_tags = site.til | map: 'tags' | join: ',' | split: ',' | group_by: tag %}
-
-<div class="page-tags">
-  {% for item in (0..tag_words.size) %}{% unless forloop.last %}
-  {% assign tag = tag_words[item] %}
-  {% assign til_tag = grouped_til_tags | where:"name", tag | first %}
-    <a class="page-tag" href="/tags#{{ tag | cgi_escape }}">{{ tag }} ({{ site.tags[tag].size | plus: til_tag.size }})  </a>
-  {% endunless %}{% endfor %}
 </div>
 
-
-<!-- Posts by Tag -->
-<div>
-  {% for item in (0..tag_words.size) %}{% unless forloop.last %}
-    {% capture this_word %}{{ tag_words[item] }}{% endcapture %}
-    <div class="tag-content">
-      <h2 id="{{ this_word | cgi_escape }}" class="tag-title">{{ this_word }}</h2>
-      {% for post in site.tags[this_word] %}{% if post.title != null %}
-        <div class="tags-post">
-            <div class="post-subheader post-type">
-              <span>Post</span>
-            </div>
-            <a class="post-link" href="{{ post.url | relative_url }}">
-              {{ post.title | escape }}
-            </a>
-            {% assign page_content = post %}
-            {% include post-subheader.html %}
-        </div>
-      {% endif %}{% endfor %}
-
-      {% for til in site.til %}
-        {% if til.tags contains this_word %}
-          <div class="tags-post">
-            <div class="post-subheader til-type">
-              <span>Today I Learned</span>
-            </div>
-            <a class="post-link" href="{{ til.url | relative_url }}">
-              {{ til.title | escape }}
-            </a>
-            {% assign page_content = til %}
-            {% include post-subheader.html %}
-          </div>
-        {% endif %}
-      {% endfor %}
-      
-        {% for howto in site.howto %}
-        {% if howto.tags contains this_word %}
-          <div class="tags-post">
-            <div class="post-subheader howto-type">
-              <span>Today I Learned</span>
-            </div>
-            <a class="post-link" href="{{ howto.url | relative_url }}">
-              {{ howto.title | escape }}
-            </a>
-            {% assign page_content = howto %}
-            {% include post-subheader.html %}
-          </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-  {% endunless %}{% endfor %}
+<div class="tag-sections">
+  {% for tag in tag_words %}
+    <section id="{{ tag | slugify }}" class="tag-section">
+      <div class="section-heading">
+        <p class="section-kicker">Tag</p>
+        <h2 class="tag-title">{{ tag }}</h2>
+      </div>
+      <div class="archive-list">
+        {% for entry in all_content %}
+          {% if entry.tags contains tag %}
+            {% include article-card.html item=entry compact=true %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
 </div>

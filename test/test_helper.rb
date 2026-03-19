@@ -1,4 +1,5 @@
 require "fileutils"
+require "json"
 require "minitest/autorun"
 require "nokogiri"
 require "open3"
@@ -49,5 +50,9 @@ module SiteBuildHelper
 
   def text_for_css
     File.read(File.join(build_site, "assets", "main.css"))
+  end
+
+  def json_for(*segments)
+    JSON.parse(File.read(File.join(build_site, *segments)))
   end
 end

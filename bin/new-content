@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+type="${1:-}"
+title="${2:-}"
+
+if [[ -z "$type" || -z "$title" ]]; then
+  echo "Usage: bin/new-content <post|note|guide> \"Title\""
+  exit 1
+fi
+
+case "$type" in
+  post)
+    directory="_posts"
+    date_prefix="$(date +%Y-%m-%d)"
+    layout="post"
+    filepath="${directory}/${date_prefix}-$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; s/-\+/-/g; s/^-//; s/-$//').md"
+    ;;
+  note)
+    directory="_notes"
+    layout="article"
+    filepath="${directory}/$(date +%Y-%m-%d)-$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; s/-\+/-/g; s/^-//; s/-$//').md"
+    ;;
+  guide)
+    directory="_guides"
+    layout="article"
+    filepath="${directory}/$(date +%Y-%m-%d)-$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g; s/-\+/-/g; s/^-//; s/-$//').md"
+    ;;
+  *)
+    echo "Unknown content type: $type"
+    echo "Expected one of: post, note, guide"
+    exit 1
+    ;;
+esac
+
+mkdir -p "$directory"
+
+if [[ -e "$filepath" ]]; then
+  echo "Refusing to overwrite existing file: $filepath"
+  exit 1
+fi
+
+cat > "$filepath" <<EOF
+---
+layout: ${layout}
+title: ${title}
+summary:
+tags: []
+date: $(date +"%Y-%m-%d %H:%M %z")
+updated_at:
+draft: true
+image:
+  path: /assets/social-devops-python-preview.png
+  width: 1200
+  height: 628
+twitter:
+  card: summary_large_image
+---
+
+Write here.
+EOF
+
+echo "Created ${filepath}"

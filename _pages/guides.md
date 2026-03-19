@@ -1,4 +1,4 @@
 ---
-permalink: /til
+permalink: /guides
 redirect_to: /archive
 ---

@@ -1,0 +1,33 @@
+{% assign item = include.item %}
+{% assign candidates = site.posts | sort: "date" | reverse %}
+{% assign related_count = 0 %}
+<section class="related-panel">
+  <div class="section-heading">
+    <p class="section-kicker">Continue reading</p>
+    <h2>Related writing</h2>
+  </div>
+  <div class="stack-list">
+    {% for candidate in candidates %}
+      {% if candidate.url != item.url %}
+        {% assign matches = false %}
+        {% for tag in item.tags %}
+          {% if candidate.tags contains tag %}
+            {% assign matches = true %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+        {% if matches and related_count < 3 %}
+          {% include article-card.html item=candidate compact=true %}
+          {% assign related_count = related_count | plus: 1 %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if related_count == 0 %}
+      {% for candidate in candidates limit:3 %}
+        {% if candidate.url != item.url %}
+          {% include article-card.html item=candidate compact=true %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
