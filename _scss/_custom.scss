@@ -699,8 +699,7 @@ svg {
 }
 
 .share-panel,
-.related-panel,
-.comments-panel {
+.related-panel {
   position: relative;
   margin-top: 2.3rem;
   max-width: var(--content-width);
@@ -708,6 +707,18 @@ svg {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--surface) 86%, var(--surface-soft) 14%);
+}
+
+.comments-panel {
+  position: relative;
+  margin-top: 2.3rem;
+  max-width: var(--content-width);
+  padding: 1rem 1rem 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  /* Fallback to standard solid color to prevent Disqus embed.js from 
+     traversing up the DOM and crashing when attempting to parse modern color-mix() */
+  background: var(--surface); 
 }
 
 .share-panel::before,

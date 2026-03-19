@@ -247,6 +247,14 @@ function initDisqusLoader() {
     const script = document.createElement("script");
     script.src = `https://${shortname}.disqus.com/embed.js`;
     script.setAttribute("data-timestamp", String(+new Date()));
+    
+    script.onerror = () => {
+      const errorMsg = document.createElement("p");
+      errorMsg.style.color = "var(--accent)";
+      errorMsg.textContent = "Comments failed to load. Please whitelist this site in your ad-blocker or tracking protection to view Disqus forums.";
+      root.appendChild(errorMsg);
+    };
+
     document.body.appendChild(script);
     button.remove();
   });
