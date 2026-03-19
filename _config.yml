@@ -60,6 +60,7 @@ design:
       accent_glow: "rgba(255, 26, 117, 0.2)"
       code_bg: "#f0f8fa"
       code_border: "rgba(1, 22, 39, 0.14)"
+      code_text: "#011627"
       track: "rgba(46, 196, 182, 0.8)"
       highlight: "#2ec4b6"
     dark:
@@ -77,6 +78,7 @@ design:
       accent_glow: "rgba(255, 26, 117, 0.32)"
       code_bg: "#0b2538"
       code_border: "rgba(229, 246, 255, 0.16)"
+      code_text: "#dff3ff"
       track: "rgba(46, 196, 182, 0.88)"
       highlight: "#2ec4b6"
 
