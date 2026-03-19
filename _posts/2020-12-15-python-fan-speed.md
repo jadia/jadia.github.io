@@ -1,5 +1,5 @@
 ---
-layout: post
+
 title: Get notification when laptop fan turns on
 date: 2020-12-15 21:20 +0530
 description: 

@@ -1,5 +1,5 @@
 ---
-layout: post
+
 title: Connecting Google Service Account with Kubernetes Service Account
 date: 2020-09-10 14:52 +0000
 description: 

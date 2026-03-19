@@ -1,5 +1,5 @@
 ---
-layout: post
+
 title: Using GitLab CI/CD to build and store container images
 date: 2020-08-25 17:06 +0530
 description: 

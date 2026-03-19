@@ -1,5 +1,5 @@
 ---
-layout: post
+
 title: GocryptFS and B2-BackBlaze backup solution
 date: 2021-05-16 20:21 +0530
 description: 
