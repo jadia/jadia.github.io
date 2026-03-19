@@ -73,27 +73,25 @@ bundle exec ruby -Itest test/site_render_test.rb
 
 ## Authoring workflow
 
-The recommended way to create content is the helper script in [`bin/new-content`](/home/nitish/workspace/jadia.dev/bin/new-content).
+The project securely relies on the standard `jekyll-compose` plugin to scaffold new posts cleanly. This natively respects your global `_config.yml` defaults.
 
-### Create a post
+### Create a post (using Docker)
 
-```bash
-bin/new-content post "Your title"
-```
-
-### Create a note
+If you are using the primary containerized workflow:
 
 ```bash
-bin/new-content note "Your title"
+docker run --rm -v $(pwd):/work -w /work jadia-dev-test bundle exec jekyll post "Your Post Title"
 ```
 
-### Create a guide
+### Create a post (using local Ruby)
+
+If you have a local Bundler environment prepared:
 
 ```bash
-bin/new-content guide "Your title"
+bundle exec jekyll post "Your Post Title"
 ```
 
-The script creates the file in the correct collection, fills in standard front matter, and marks the draft as `true` by default.
+This command will automatically generate a new markdown file named tightly with today's date in `_posts/` and inject the dynamic boilerplate frontmatter defined in your config.
 
 ## Build and deployment flow
 
