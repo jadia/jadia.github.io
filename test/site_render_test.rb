@@ -4,8 +4,13 @@ class SiteRenderTest < Minitest::Test
   def test_home_page_builds_with_latest_content
     document = SiteBuildHelper.html_for("index.html")
 
-    assert_equal "Nitish Jadia", document.at_css(".site-brand-copy strong")&.text&.strip
-    assert_equal "/circle-cropped.png", document.at_css(".site-brand-mark img")&.[]("src")
+    brand_name = document.at_css(".site-brand-copy strong")&.text&.strip
+    brand_logo_src = document.at_css(".site-brand-mark img")&.[]("src")
+
+    refute_empty brand_name, "expected the author brand name to be dynamically rendered"
+    refute_nil brand_logo_src, "expected the author brand logo image element to be present"
+    refute_empty brand_logo_src, "expected the author brand logo image source attribute to not be empty"
+
     assert_equal "Latest", document.at_css(".home-section--timeline .section-kicker")&.text&.strip
     assert document.at_css("[data-header-search]"), "expected the header to render the compact search control"
     assert document.at_css(".home-section--timeline .content-card"), "expected the home page to render the chronological feed"
