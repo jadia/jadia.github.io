@@ -51,8 +51,8 @@ Add tests when:
 File: `.github/workflows/ci.yml`
 
 - Triggers:
-  - push to `source`
-  - pull_request to `source`
+  - push to `master`
+  - pull_request to `master`
 - Steps:
   - checkout
   - Ruby setup (3.1, bundler cache)
@@ -64,7 +64,7 @@ File: `.github/workflows/ci.yml`
 
 File: `.github/workflows/github-pages.yml`
 
-- Trigger: push to `source` or manual dispatch.
+- Trigger: push to `master` or manual dispatch.
 - Build job:
   - checkout + Ruby setup
   - `jekyll build` to `./_site`

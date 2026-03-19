@@ -12,7 +12,6 @@
 
 - `_posts/`: dated technical posts.
 - `_pages/`: static pages (`about`, `tags`, `archive`, etc).
-- `_til/`, `_howto`: non-output/internal collections currently disabled by default.
 
 ## Presentation
 

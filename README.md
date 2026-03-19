@@ -1,6 +1,6 @@
 # jadia.dev
 
-`jadia.dev` is a Jekyll-based technical writing site focused on chronological technical posts. The site is statically generated and deployed with GitHub Pages.
+`jadia.dev` is a personal technical blog focused on chronological technical posts, hosted securely by GitHub Pages.
 
 ## Stack
 
