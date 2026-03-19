@@ -6,7 +6,7 @@ This file is the onboarding and operating guide for any AI agent working on `jad
 
 - Site type: Jekyll-based technical blog.
 - Current style: Minimal, chronology-first layout with a compact header, search trigger, and theme toggle.
-- Source-of-truth branch in workflows: `source`.
+- Source-of-truth branch in workflows: `master`.
 - Deploy target: GitHub Pages via artifact upload + deploy actions.
 
 ## Stack And Runtime
