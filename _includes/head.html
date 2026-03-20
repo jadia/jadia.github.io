@@ -87,10 +87,12 @@
     (function() {
       try {
         var stored = localStorage.getItem("jadia-theme");
-        var theme = stored || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        var configTheme = "{{ site.design.theme_mode | default: 'light' }}";
+        var theme = stored || (configTheme === "system" ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : configTheme);
         document.documentElement.setAttribute("data-theme", theme);
       } catch (error) {
-        document.documentElement.setAttribute("data-theme", "light");
+        var fallback = "{{ site.design.theme_mode | default: 'light' }}";
+        document.documentElement.setAttribute("data-theme", fallback === "system" ? "light" : fallback);
       }
     })();
   </script>
