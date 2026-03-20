@@ -17,6 +17,7 @@ branding:
   search_prompt: Search articles
 
 design:
+  theme_mode: "light" # "light", "dark", or "system" (follows browser preference)
   # Centralized theme system.
   # Update values here first, then wire any new keys in `_includes/head.html` and `_scss/_custom.scss`.
   # Deep guide: docs/theme-customization.md
