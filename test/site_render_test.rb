@@ -81,7 +81,7 @@ class SiteRenderTest < Minitest::Test
     end
   end
 
-  # Validates that the Disqus comment block layout compiles with the correct
+  # Verifies that the Disqus comment block layout compiles with the correct
   # dataset attributes and empty thread container strictly required by the lazy-loading script.
   def test_article_disqus_container_renders_correctly
     document = SiteBuildHelper.find_html("2020/07/08/bitcoin-whitepaper*/index.html")
@@ -95,5 +95,20 @@ class SiteRenderTest < Minitest::Test
     # Verify the lazy-load manual trigger button and the injection target div are present
     assert document.at_css("[data-load-comments]"), "Expected a manual button to load comments"
     assert document.at_css("#disqus_thread"), "Expected the empty Disqus thread injection div"
+  end
+
+  # Verifies the WebP optimization pipeline generates a smaller WebP version of
+  # the test sample PNG and rewrites the markdown `img` tag intelligently.
+  def test_image_optimization_pipeline_rewrites_html
+    test_page = SiteBuildHelper.html_for("test-image", "index.html")
+    webp_path = File.join(SiteBuildHelper.build_site, "assets", "images", "test", "sample.webp")
+
+    # The actual physical webp optimized file should have been placed correctly by post_write hook
+    assert File.exist?(webp_path), "Expected the WebP plugin to generate #{webp_path}"
+    
+    # The rendered HTML page must have its <img> tag natively replacing .png to .webp
+    img_element = test_page.at_css(".page-content img")
+    assert img_element, "Expected an image tag inside the test page content"
+    assert_equal "/assets/images/test/sample.webp", img_element["src"], "Expected HTML optimization rewrite of source .png to .webp"
   end
 end

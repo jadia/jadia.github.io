@@ -7,6 +7,8 @@ FROM ruby:3.1-bookworm
 ARG UID=1000
 ARG GID=1000
 
+RUN apt-get update && apt-get install -y webp
+
 RUN groupadd -g ${GID} jekyll_group && \
     useradd -u ${UID} -g ${GID} -s /bin/bash -m jekyll_user
 
