@@ -77,6 +77,7 @@ Use semantic meaning rather than hardcoded roles. Example: use `accent` for inte
 ## Defaults And Collections
 
 - `defaults`: automatic front matter for all content and posts.
+  - Automatically defines the default `.jpg` used in standard OpenGraph share previews via `image`.
 - Published model is post-only (`_posts`).
 - Legacy routes (`/notes`, `/guides`, `/til`, `/howto`, `/posts`) are redirects maintained in `_pages`.
 

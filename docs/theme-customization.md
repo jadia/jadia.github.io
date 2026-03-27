@@ -178,6 +178,19 @@ design:
       highlight_mix: "88%"
 ```
 
+## Media And Social Images
+
+### WebP Optimization
+All PNG/JPG images included in content or assets are automatically compressed via `_plugins/image_optimizer.rb` into WebP. 
+- PNGs are explicitly optimized losslessly (safeguarding the quality of screenshots and diagrams). 
+- JPG/JPEGs are gracefully optimized lossily to save bandwidth.
+
+### OpenGraph (OG) Previews
+The static hero image used for social embedding is located at:
+`assets/images/orion-nebula.jpg`
+
+> **Important**: This specific graphic is explicitly excluded from WebP conversion within the `image_optimizer.rb` logic so it remains a native JPEG. Social media crawler bot compatibility favors JPEGs and PNGs exclusively. Refrain from pointing default social data to heavily compressed `.webp` endpoints.
+
 ## Safe Change Checklist
 
 1. `bundle exec jekyll build --trace`

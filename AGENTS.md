@@ -23,6 +23,8 @@ This file is the onboarding and operating guide for any AI agent working on `jad
   - `jekyll-redirect-from`
   - `jekyll-compose`
 - Tests: Minitest (`test/site_render_test.rb`).
+- Custom Plugins (in `_plugins/`):
+  - `image_optimizer.rb`: converts JPG/PNGs to WebP automatically.
 
 ## How The Site Is Built
 
@@ -38,6 +40,7 @@ This file is the onboarding and operating guide for any AI agent working on `jad
    - reading progress bar
    - lazy Disqus load
 5. Jekyll builds static pages into `_site/`.
+6. Custom `_plugins/image_optimizer.rb` hooks post-render to convert images to WebP and rewrite HTML tags.
 
 ## Important Directories
 
@@ -57,9 +60,10 @@ This file is the onboarding and operating guide for any AI agent working on `jad
   - Trigger: push/pull_request on `source`.
   - Runs Jekyll build + regression tests.
   - Runs Danger/proselint on PRs.
+- Link Checker workflow (runs Lychee to flag broken links via PR comments or weekly issues).
 - Deploy workflow: `.github/workflows/github-pages.yml`
   - Trigger: push to `source` or manual dispatch.
-  - Builds site and uploads artifact.
+  - Builds site, converts WebP images, and uploads artifact.
   - Deploys with `actions/deploy-pages@v4`.
 
 ## Configuration-First Theming

@@ -15,7 +15,8 @@ The site is a static Jekyll blog with:
 2. Collections and defaults resolve front matter.
 3. Layouts and includes compose HTML output.
 4. `assets/main.scss` compiles into `assets/main.css`.
-5. `assets/main.js` initializes UI behavior on `DOMContentLoaded`.
+5. Custom plugin `_plugins/image_optimizer.rb` losslessly/lossily compress assets into WebP.
+6. `assets/main.js` initializes UI behavior on `DOMContentLoaded`.
 
 ## View Layer Boundaries
 

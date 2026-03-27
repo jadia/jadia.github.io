@@ -56,9 +56,19 @@ File: `.github/workflows/ci.yml`
 - Steps:
   - checkout
   - Ruby setup (3.1, bundler cache)
-  - Jekyll production build
+  - Jekyll production build (including WebP conversion)
   - render regression tests
   - optional PR prose lint via Danger
+
+## Link Checker Workflow
+
+File: `.github/workflows/link-checker.yml` (and potentially other configurations like `.lycheerc`).
+
+- Triggers:
+  - weekly
+  - manual dispatch
+  - pull_request (posts comments rather than failing build)
+- Uses `lycheeverse/lychee-action` to ensure all external and internal links on the site are alive.
 
 ## Deploy Workflow
 

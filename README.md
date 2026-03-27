@@ -10,7 +10,8 @@
 - Jekyll `3.10`
 - GitHub Pages gem set
 - Sass for the design system
-- Small vanilla JavaScript modules for search, theme toggle, TOC, and code-copy UX
+- Small vanilla JavaScript modules for search, theme toggle, TOC, code-copy UX, and reading progress
+- Custom Jekyll plugin for automated lossless/lossy WebP image optimization
 - GitHub Actions for CI and deployment
 
 ## Content model
@@ -97,11 +98,11 @@ This command will automatically generate a new markdown file named tightly with 
 
 ## Build and deployment flow
 
-- CI runs on pushes and pull requests to `master`
-- CI builds the site and runs generated-site regression tests
+- CI runs on pushes and pull requests to `master` (builds site, runs regression tests)
+- A dedicated Lychee link checker workflow runs on PRs and weekly to catch broken internal/external links without blocking builds
 - GitHub Pages deployment builds from `master` and publishes the generated `_site` artifact
 
-> **Note:** The CI pipelines use `ruby/setup-ruby` directly on GitHub Actions runners. They do not build or test the local `Dockerfile`, which is why Docker-specific build errors are not caught by the regression suite. The Docker setup is currently provided purely as a convenience for local development.
+> **Note:** The CI pipelines use `ruby/setup-ruby` directly on GitHub Actions runners. They do not build or test the local `Dockerfile`, which is why Docker-specific build errors are not caught by the regression suite. We also use `mamba` or system `webp` to support the WebP image optimization plugin during builds. The Docker setup is currently provided purely as a convenience for local development.
 
 Workflow definitions live in:
 
