@@ -15,11 +15,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Build site
+        env:
+          JEKYLL_ENV: production
+        run: |
+          sudo apt-get update && sudo apt-get install -y webp
+          bundle exec jekyll build
+
       - name: Lychee Broken Link Check
         id: lychee
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --verbose --no-progress './**/*.md' './**/*.html'
+          args: --verbose --no-progress '_site/**/*.html'
           fail: false # Do not block PRs even if links are broken
 
       - name: Post Comment on PR
