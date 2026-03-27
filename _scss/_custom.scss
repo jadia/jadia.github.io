@@ -15,6 +15,30 @@
 
 html {
   scroll-behavior: smooth;
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--bg);
+}
+
+/* Chrome, Edge, Safari (Desktop ONLY to preserve native overlay scrollbars on mobile) */
+@media (hover: hover) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--accent);
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--bg); /* Creates a "floating" effect */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-strong);
+  }
 }
 
 body {
