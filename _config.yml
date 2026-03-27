@@ -107,7 +107,7 @@ defaults:
   - scope:
       path: ""
     values:
-      image: /assets/social-devops-python-preview.png
+      image: /assets/images/orion-nebula.jpg
       summary:
   - scope:
       path: ""
@@ -115,6 +115,7 @@ defaults:
     values:
       layout: article
       section: posts
+      image: /assets/images/orion-nebula.jpg
 
 # Author
 author:
@@ -218,10 +219,6 @@ jekyll_compose:
     drafts:
       summary:
       tags: []
-      image: 
-          path: /assets/social-devops-python-preview.png
-          width: 1200
-          height: 628
       updated_at:
       draft: true
       twitter:
@@ -229,10 +226,6 @@ jekyll_compose:
     posts:
       summary:
       tags: []
-      image: 
-          path: /assets/social-devops-python-preview.png
-          width: 1200
-          height: 628
       updated_at:
       draft: false
       twitter:

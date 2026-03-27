@@ -2,12 +2,6 @@
 title: Download Vagrant Box faster
 summary: Download the Vagrant box file manually first, then add it locally before running `vagrant up`.
 tags: ["Vagrant"]
-image:
-  path: /assets/til/vagrant-faster-cover.png
-  width: 1120
-  height: 630
-twitter:
-  card: summary_large_image
 date: 2020-07-10 15:30 +0000
 redirect_from:
   - /til/2020/07/10/download-vagrant-box-faster/

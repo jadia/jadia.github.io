@@ -4,12 +4,6 @@ title: GocryptFS and B2-BackBlaze backup solution
 date: 2021-05-16 20:21 +0530
 description: 
 tags: ["Linux"]
-image:
-  path: "/assets/social-devops-python-preview.png"
-  width: 1200
-  height: 628
-twitter:
-  card: summary_large_image
 ---
 
 Back in 2019, my laptop's internal HDD crashed taking down 2TB worth of data with it. Most of the older data was recovered

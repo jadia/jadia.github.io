@@ -111,4 +111,22 @@ class SiteRenderTest < Minitest::Test
     assert img_element, "Expected an image tag inside the test page content"
     assert_equal "/assets/images/test/sample.webp", img_element["src"], "Expected HTML optimization rewrite of source .png to .webp"
   end
+
+  # Verifies the Static OG Image pipeline:
+  # 1. The Orion Nebula JPG asset exists in the build destination.
+  # 2. The `<meta property="og:image">` tag in the HTML points to this static asset.
+  def test_og_image_static_metadata
+    # Target a specific post that we know exists
+    post_path = "2020/07/08/bitcoin-whitepaper/index.html"
+    document = SiteBuildHelper.find_html(post_path)
+    
+    # 1. Check if the physical JPG exists in the output directory
+    og_image_path = File.join(SiteBuildHelper.build_site, "assets", "images", "orion-nebula.jpg")
+    assert File.exist?(og_image_path), "Expected static OG image JPG to be present at #{og_image_path}"
+    
+    # 2. Check if the metadata in the HTML correctly references the static image
+    og_image_meta = document.at_css("meta[property='og:image']")
+    assert og_image_meta, "Expected an og:image meta tag on the article page"
+    assert_includes og_image_meta["content"], "/assets/images/orion-nebula.jpg", "The og:image meta tag should point to the Orion Nebula JPG"
+  end
 end

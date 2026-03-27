@@ -5,12 +5,6 @@ description: Summary of Bitcoin Whitepaper published by Satoshi Nakamoto
 tags:
 - Blockchain
 - Whitepapers
-image:
-  path: "/assets/social-devops-python-preview.png"
-  width: 1120
-  height: 630
-twitter:
-  card: summary_large_image
 date: 2020-07-08 15:12 +0000
 ---
 ## Bitcoin: A Peer-to-Peer Electronic Cash System  

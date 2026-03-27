@@ -4,12 +4,6 @@ title: Using GitLab CI/CD to build and store container images
 date: 2020-08-25 17:06 +0530
 description: 
 tags: [CI/CD]
-image:
-  path: "/assets/social-devops-python-preview.png"
-  width: 1200
-  height: 628
-twitter:
-  card: summary_large_image
 ---
 
 Often building container images consume a lot of bandwidth and back at home I don't have a good internet connection to build images again and again.
@@ -30,11 +24,6 @@ Instead of Docker Hub to host the repository and building images on my local mac
 
 ```yaml
 #Docker.gitlab-ci.yml
-
-build:image:
-  image: docker:stable
-  services:
-    - docker:dind
 
   variables:
     DOCKER_HOST: tcp://docker:2375

@@ -4,12 +4,6 @@ title: Connecting Google Service Account with Kubernetes Service Account
 date: 2020-09-10 14:52 +0000
 description: 
 tags: ["Kubernetes"]
-image:
-  path: "/assets/social-devops-python-preview.png"
-  width: 1200
-  height: 628
-twitter:
-  card: summary_large_image
 ---
 ## 3 ways to access a Google Cloud Resource:
  

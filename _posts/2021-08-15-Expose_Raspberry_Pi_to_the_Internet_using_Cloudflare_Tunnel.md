@@ -4,12 +4,6 @@ title: Expose Raspberry Pi to the Internet using Cloudflare Tunnel
 date: 2021-08-15 19:00 +0530
 description: 
 tags: ["Linux"]
-image:
-  path: "/assets/social-devops-python-preview.png"
-  width: 1200
-  height: 628
-twitter:
-  card: summary_large_image
 
 ---
 

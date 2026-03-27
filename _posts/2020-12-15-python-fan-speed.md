@@ -4,12 +4,6 @@ title: Get notification when laptop fan turns on
 date: 2020-12-15 21:20 +0530
 description: 
 tags: ["Python"]
-image:
-  path: "/assets/social-devops-python-preview.png"
-  width: 1200
-  height: 628
-twitter:
-  card: summary_large_image
 ---
 
 I have a habit of putting my ultrabook on bed (vents are blocked) because the fans rarely start. But when it does I make sure to give enough room for fans to work.

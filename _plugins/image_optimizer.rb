@@ -22,6 +22,9 @@ Jekyll::Hooks.register :site, :post_write do |site|
 
       source_path = file.path
       next unless File.exist?(source_path)
+      
+      # Skip the site-wide social image to maintain JPEG compatibility for social crawlers
+      next if url_path.include?('orion-nebula.jpg')
 
       # Determine if png (lossless) or jpg (lossy)
       is_png = source_path =~ /\.png$/i
@@ -73,7 +76,7 @@ Jekyll::Hooks.register [:pages, :documents], :post_render do |doc|
       site_url = doc.site.config['url'].to_s
       is_external = url.start_with?('http://', 'https://', '//') && (!site_url.empty? ? !url.include?(site_url) : true)
       
-      if is_external
+      if is_external || url.include?('orion-nebula.jpg')
         match
       else
         "#{prefix}=\"#{url.sub(/\.(png|jpg|jpeg)$/i, '.webp')}\""
