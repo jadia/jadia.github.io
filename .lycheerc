@@ -1,25 +1,39 @@
 # Lychee configuration
 # https://github.com/lycheeverse/lychee#configuration
+# Lychee configuration file
+# See https://github.com/lycheeverse/lychee#configuration-file
 
-# Check all markdown and HTML files
-# We now scan the built _site directory to correctly resolve Liquid and paths
-# Verbose is disabled to report only summary and errors
+--root-dir _site
 --no-progress
 --max-concurrency 10
---user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
---root _site
+--scheme http
+--scheme https
 
 # Don't check these links
 --exclude-mail
+
+# Exclude internal file lookups to eliminate noise from clean URLs
+--exclude "file://.*"
 
 # Ignore specific URL patterns
 --exclude ^http://127\.0\.0\.1
 --exclude ^http://localhost
 --exclude ^https://jadia\.dev
 --exclude ^#$
---exclude .*facebook\.com.*
---exclude .*linkedin\.com.*
---exclude .*twitter\.com.*
+# Exclude domains that aggressively block crawlers with 403/401
+--exclude "dzone.com"
+--exclude "backblaze.com"
+--exclude "community.cloudflare.com"
+--exclude "raspberrypi.com"
+
+# Exclude other known false positives or irrelevant links
+--exclude "linkedin.com"
+--exclude "twitter.com"
+--exclude "facebook.com"
+--exclude "fonts.gstatic.com"
+--exclude "disqus.com"
+--exclude "disquscdn.com"
+--exclude "google-analytics.com"
 --exclude .*medium\.com.*
 --exclude .*cloudflare\.com.*
 --exclude .*raspberrypi\.(org|com).*
@@ -29,3 +43,6 @@
 # Accept 403 because many technical blogs/docs block crawlers but links are still valid
 --accept 200,201,429,403
 --max-retries 2
+
+# Output formatting
+--output lychee-report.md
