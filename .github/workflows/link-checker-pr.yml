@@ -1,0 +1,37 @@
+name: Link Checker (PR)
+
+on:
+  pull_request:
+    paths:
+      - '**.md'
+      - '**.html'
+      - '_posts/**'
+      - '_pages/**'
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lychee Broken Link Check
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress './**/*.md' './**/*.html'
+          fail: false # Do not block PRs even if links are broken
+
+      - name: Post Comment on PR
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🔗 Broken Link Report
+            
+            Lychee found broken links in this Pull Request. Please review them before merging if possible.
+            
+            ${{ steps.lychee.outputs.content }}
+            
+            _This is an automated health check for jadia.dev._
