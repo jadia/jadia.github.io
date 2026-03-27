@@ -92,7 +92,7 @@ This is similar to [TCP multiplexing](http://www.tcpipguide.com/free/t_TCPIPProc
 <!-- ![Origin Certificates](/assets/posts/2021-08-15-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-16-22-00-35.png) -->
 
 [Read More: The making of Cloudflare Warp](https://blog.cloudflare.com/the-making-of-cloudflare-warp/)    
-[Read More: Traffic encryption between Cloudflare tunnel and HTTPS origin servers](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/local-management/ingress/#traffic-encryption-between-cloudflare-tunnel-and-https-origin-servers)
+[Read More: Traffic encryption between Cloudflare tunnel and HTTPS origin servers](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/install-and-setup/tunnel-guide/local/local-management/ingress/#traffic-encryption-between-cloudflare-tunnel-and-https-origin-servers)
 
 ## Set up Cloudflared Tunnel
 
@@ -109,7 +109,7 @@ We will create a new tunnel which will be accessible from `pi.example.com`.
 This can also be done without Docker. Cloudflared can be installed as a service on the Raspberry Pi
 which do not support Docker.   
 
-The official guide is here: [https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started-guides/share-new-site/](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started-guides/share-new-site/)
+The official guide is here: [https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started-guides/share-new-site/](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started-guides/share-new-site/)
 
 ### Build cloudflared Docker image
 
@@ -171,8 +171,8 @@ credentials-file: /home/nonroot/.cloudflared/3aaabf8a-a834-2b7d-6ba8-3fb6b24306f
 ```
 Source: [https://github.com/aeleos/cloudflared](https://github.com/aeleos/cloudflared)     
 
-- [More on - creating tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/get-started/create-local-tunnel/)    
-- [More on - noTLSVerify](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/local-management/ingress/#notlsverify)   
+- [More on - creating tunnels](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/install-and-setup/tunnel-guide/local/get-started/create-local-tunnel/)    
+- [More on - noTLSVerify](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/install-and-setup/tunnel-guide/local/local-management/ingress/#notlsverify)   
 
 
 ### Create DNS entry for the tunnel
@@ -191,7 +191,7 @@ we have to create a manual entry for the tunnel.
 
 ![Tunnel entry in cloudflare](/assets/posts/2021-07-30-Expose_Raspberry_Pi_to_the_Internet_using_Cloudflare_Tunnel/2021-08-16-02-12-39.png)
 
-More on Adding DNS Entry: [https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/get-started/create-local-tunnel/#dns-records](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/get-started/create-local-tunnel/#dns-records)
+More on Adding DNS Entry: [https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/install-and-setup/tunnel-guide/local/get-started/create-local-tunnel/#dns-records](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/install-and-setup/tunnel-guide/local/get-started/create-local-tunnel/#dns-records)
 
 
 ### Run the tunnel
@@ -202,15 +202,15 @@ docker run --restart=always -d --network host -v /home/ubuntu/.cloudflared:/home
 ```
 
 For every new sub-domain, you can run the `tunnel route dns` command to add it on cloudflare.   
-[More: Run a Tunnel - Cloudflare Documentation](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/install-and-setup/tunnel-guide/local/get-started/run-tunnel/)
+[More: Run a Tunnel - Cloudflare Documentation](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/install-and-setup/tunnel-guide/local/get-started/run-tunnel/)
 
 
 ## Further read
 
 - Developing a TCP Network Proxy - Pwn Adventure 3. Accessed August 15, 2021. [https://www.youtube.com/watch?v=iApNzWZG-10](https://www.youtube.com/watch?v=iApNzWZG-10).
 - GitHub. “GitHub - Anderspitman/Awesome-Tunneling: List of Ngrok Alternatives and Other Ngrok-like Tunneling Software and Services. Focus on Self-Hosting.” Accessed August 15, 2021. [https://github.com/anderspitman/awesome-tunneling](https://github.com/anderspitman/awesome-tunneling).
-- [Cloudflared documentation](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started-guides/single-command/)
-- [Share New Site using Cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started-guides/share-new-site/)
+- [Cloudflared documentation](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started-guides/single-command/)
+- [Share New Site using Cloudflared](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started-guides/share-new-site/)
 - SSH Tunneling - A Deep Dive. Accessed August 16, 2021. [https://www.youtube.com/watch?v=PZTBO555q44](https://www.youtube.com/watch?v=PZTBO555q44).
 - [Cloudflare Origin CA](https://blog.cloudflare.com/cloudflare-ca-encryption-origin/)
 

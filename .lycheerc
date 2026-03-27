@@ -3,26 +3,26 @@
 
 # Check all markdown and HTML files
 # We now scan the built _site directory to correctly resolve Liquid and paths
---verbose
+# Verbose is disabled to report only summary and errors
 --no-progress
 --max-concurrency 10
 --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
---root .
+--root _site
 
 # Don't check these links
 --exclude-mail
 
 # Ignore specific URL patterns
---exclude "^http://127\.0\.0\.1"
---exclude "^http://localhost"
---exclude "^https://jadia\.dev"
---exclude "^#$"
---exclude ".*facebook\.com.*"
---exclude ".*linkedin\.com.*"
---exclude ".*twitter\.com.*"
---exclude ".*medium\.com.*"
---exclude ".*cloudflare\.com.*"
---exclude ".*raspberrypi\.(org|com).*"
+--exclude ^http://127\.0\.0\.1
+--exclude ^http://localhost
+--exclude ^https://jadia\.dev
+--exclude ^#$
+--exclude .*facebook\.com.*
+--exclude .*linkedin\.com.*
+--exclude .*twitter\.com.*
+--exclude .*medium\.com.*
+--exclude .*cloudflare\.com.*
+--exclude .*raspberrypi\.(org|com).*
 
 # Retry logic for transient internet issues
 --retry-wait-time 5
