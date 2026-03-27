@@ -367,7 +367,9 @@ svg {
   transition: width 0.2s ease-out;
   border: none;
   outline: none;
-  box-shadow: none;
+  box-shadow: 
+    0 0 10px var(--accent-glow),
+    0 0 4px var(--accent-glow);
 }
 
 .home-intro,
