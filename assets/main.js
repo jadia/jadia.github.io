@@ -266,14 +266,23 @@ function initReadingProgress() {
   const article = document.querySelector(".js-article-content");
   if (!wrapper || !bar || !article) return;
 
-  wrapper.classList.add("is-visible");
-
   const updateProgress = () => {
     const start = article.offsetTop;
     const total = article.scrollHeight - window.innerHeight;
     const current = Math.max(window.scrollY - start, 0);
     const progress = total > 0 ? Math.min((current / total) * 100, 100) : 0;
     bar.style.width = `${progress}%`;
+    
+    if (progress >= 100) {
+      wrapper.setAttribute("data-exit", "bottom");
+      wrapper.classList.remove("is-visible");
+    } else if (progress <= 0) {
+      wrapper.setAttribute("data-exit", "top");
+      wrapper.classList.remove("is-visible");
+    } else {
+      wrapper.removeAttribute("data-exit");
+      wrapper.classList.add("is-visible");
+    }
   };
 
   updateProgress();
