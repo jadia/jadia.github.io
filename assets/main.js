@@ -98,9 +98,36 @@ function initToc() {
 
   const items = headings.map((heading) => {
     if (!heading.id) heading.id = slugify(heading.textContent);
-    return `<a href="#${heading.id}" class="toc-link toc-link--${heading.tagName.toLowerCase()}">${heading.textContent}</a>`;
+    return `<a href="#${heading.id}" class="toc-link toc-link--${heading.tagName.toLowerCase()}" data-heading-id="${heading.id}">${heading.textContent}</a>`;
   });
   tocRoot.innerHTML = items.join("");
+
+  // ScrollSpy logic
+  const isEnabled = document.documentElement.dataset.tocScrollspy === "true";
+  if (!isEnabled || !window.IntersectionObserver) return;
+
+  const tocLinks = Array.from(tocRoot.querySelectorAll(".toc-link"));
+  const observerOptions = {
+    rootMargin: "-20% 0% -70% 0%",
+    threshold: 0,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach((link) => {
+          const isActive = link.dataset.headingId === entry.target.id;
+          link.classList.toggle("is-active", isActive);
+          if (isActive) {
+            // Ensure the active link is visible in the scrollable TOC card
+            link.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  headings.forEach((heading) => observer.observe(heading));
 }
 
 function initCodeCopy() {
@@ -119,19 +146,69 @@ function initCodeCopy() {
     const button = document.createElement("button");
     button.className = "code-copy";
     button.type = "button";
-    button.textContent = "Copy";
+    button.setAttribute("aria-label", "Copy code");
+    
+    const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    button.innerHTML = copyIcon;
+    
     button.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(code.innerText);
-        button.textContent = "Copied";
+        button.innerHTML = checkIcon;
+        button.style.color = "var(--highlight)";
         setTimeout(() => {
-          button.textContent = "Copy";
+          button.innerHTML = copyIcon;
+          button.style.color = "";
         }, 1400);
       } catch (error) {
-        button.textContent = "Failed";
+        // Fallback or ignore
       }
     });
     wrapper.appendChild(button);
+  });
+}
+
+function initDeepLinks() {
+  const headings = document.querySelectorAll(".article-content h2, .article-content h3, .article-content h4, .page-body h2, .page-body h3, .page-body h4");
+  
+  headings.forEach((heading) => {
+    if (!heading.id) return;
+    
+    const wrapper = document.createElement("span");
+    wrapper.style.position = "relative";
+    wrapper.style.display = "inline-flex";
+    wrapper.style.alignItems = "center";
+    
+    const link = document.createElement("a");
+    link.href = `#${heading.id}`;
+    link.className = "heading-anchor";
+    link.setAttribute("aria-label", "Copy link to section");
+    link.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>`;
+    
+    const label = document.createElement("span");
+    label.className = "heading-anchor-label";
+    label.textContent = "Copied!";
+    
+    link.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const url = new URL(window.location.href);
+      url.hash = heading.id;
+      window.history.pushState(null, null, url.toString());
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        link.classList.add("is-copied");
+        label.classList.add("is-visible");
+        setTimeout(() => {
+          link.classList.remove("is-copied");
+          label.classList.remove("is-visible");
+        }, 1500);
+      } catch (err) {}
+    });
+    
+    wrapper.appendChild(link);
+    wrapper.appendChild(label);
+    heading.appendChild(wrapper);
   });
 }
 
@@ -239,9 +316,17 @@ function initDisqusLoader() {
     if (window.DISQUS) return;
 
     const shortname = root.dataset.disqusShortname;
+    const skeleton = root.querySelector("[data-comments-skeleton]");
+    if (skeleton) skeleton.classList.remove("is-hidden");
+
     window.disqus_config = function disqusConfig() {
       this.page.url = root.dataset.disqusUrl;
       this.page.identifier = root.dataset.disqusIdentifier;
+      this.callbacks.onReady = [
+        function () {
+          if (skeleton) skeleton.classList.add("is-hidden");
+        },
+      ];
     };
 
     const script = document.createElement("script");
@@ -249,6 +334,7 @@ function initDisqusLoader() {
     script.setAttribute("data-timestamp", String(+new Date()));
     
     script.onerror = () => {
+      if (skeleton) skeleton.classList.add("is-hidden");
       const errorMsg = document.createElement("p");
       errorMsg.style.color = "var(--accent)";
       errorMsg.textContent = "Comments failed to load. Please whitelist this site in your ad-blocker or tracking protection to view Disqus forums.";
@@ -298,4 +384,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initSearch();
   initDisqusLoader();
   initReadingProgress();
+  initDeepLinks();
 });

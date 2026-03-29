@@ -57,6 +57,9 @@ design:
       text: "#ffffff"
       accent_mix: "22%"
       highlight_mix: "78%"
+    # New features
+    toc_scrollspy: true
+    show_last_updated: true
   palette:
     light:
       bg: "#f6fbfc"

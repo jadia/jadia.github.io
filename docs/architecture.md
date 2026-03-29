@@ -16,7 +16,8 @@ The site is a static Jekyll blog with:
 3. Layouts and includes compose HTML output.
 4. `assets/main.scss` compiles into `assets/main.css`.
 5. Custom plugin `_plugins/image_optimizer.rb` losslessly/lossily compress assets into WebP.
-6. `assets/main.js` initializes UI behavior on `DOMContentLoaded`.
+6. Custom plugin `_plugins/git_metadata.rb` retrieves last-modified timestamps from Git history.
+7. `assets/main.js` initializes UI behavior on `DOMContentLoaded`.
 
 ## View Layer Boundaries
 
@@ -46,7 +47,7 @@ The site is a static Jekyll blog with:
 
 - Theme: `initThemeToggle`.
 - Header search: `initHeaderSearch`.
-- TOC: `initToc`.
+- TOC: `initToc` (with ScrollSpy support).
 - Code copy: `initCodeCopy`.
 - Site search page: `initSearch`.
 - Comments lazy load: `initDisqusLoader`.

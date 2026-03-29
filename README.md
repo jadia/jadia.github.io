@@ -10,9 +10,10 @@
 - Jekyll `3.10`
 - GitHub Pages gem set
 - Sass for the design system
-- Small vanilla JavaScript modules for search, theme toggle, TOC, code-copy UX, and reading progress
+- Small vanilla JavaScript modules for search, theme toggle, TOC (with ScrollSpy), code-copy UX, and reading progress
 - Custom Jekyll plugin for automated lossless/lossy WebP image optimization
-- GitHub Actions for CI and deployment
+- Custom Jekyll plugin for fetching dynamic "Last Updated" metadata from Git history
+- GitHub Actions for CI and deployment (configured with full Git history fetch)
 
 ## Content model
 

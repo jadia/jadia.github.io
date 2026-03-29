@@ -55,6 +55,10 @@ This reference explains the practical impact of each major config section.
   - Percentage of accent color in selection background blend.
 - `design.interaction.selection.highlight_mix`:
   - Percentage of highlight color in selection background blend.
+- `design.interaction.toc_scrollspy`:
+  - Boolean. If true, highlights the current section in the Table of Contents during scroll.
+- `design.interaction.show_last_updated`:
+  - Boolean. If true, displays the Git-based 'Last Updated' date in article metadata. Requires full Git history in build environment.
 
 ### Palette
 

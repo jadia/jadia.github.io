@@ -7,6 +7,10 @@
   --radius-pill: 999px;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 *,
 *::before,
 *::after {
@@ -536,12 +540,42 @@ svg {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.tag-row,
+.pagination-nav,
+.footer-links,
+.social-links {
   gap: 0.7rem;
 }
 
 .article-meta {
   color: var(--text-soft);
   font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+
+  span + span::before {
+    content: "";
+    width: 3px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 50%;
+    margin: 0 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .meta-updated {
+    color: var(--accent);
+    font-weight: 600;
+    opacity: 0.85;
+  }
 }
 
 .meta-pill,
@@ -588,11 +622,10 @@ svg {
   display: grid;
   grid-template-columns: minmax(13.5rem, 16.5rem) minmax(0, 1fr);
   gap: clamp(1.3rem, 2.7vw, 2.5rem);
-  align-items: start;
 }
 
 .article-aside {
-  align-self: start;
+  min-width: 0;
 }
 
 .article-main {
@@ -643,9 +676,67 @@ svg {
 .page-body h2,
 .page-body h3,
 .page-body h4 {
+  position: relative;
   color: var(--heading);
   font-family: var(--font-display);
   scroll-margin-top: 5.5rem;
+}
+
+.heading-anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  opacity: 0;
+  color: var(--accent);
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease, filter 0.2s ease;
+  transform: translateX(-5px);
+  text-decoration: none !important;
+  background: none !important;
+  padding-bottom: 0 !important;
+  position: relative;
+}
+
+h2:hover .heading-anchor,
+h3:hover .heading-anchor,
+h4:hover .heading-anchor {
+  opacity: 0.8;
+  transform: translateX(0);
+}
+
+.heading-anchor:hover, .heading-anchor:focus-visible {
+  opacity: 1 !important;
+  color: var(--accent-strong);
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+}
+
+.heading-anchor.is-copied {
+  color: var(--highlight);
+  opacity: 1;
+  transform: translateX(0);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--highlight) 30%, transparent));
+}
+
+.heading-anchor-label {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  margin-left: 0.4rem;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--highlight);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.heading-anchor-label.is-visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 
 .article-content h2,
@@ -722,8 +813,45 @@ svg {
   padding-right: 4.4rem;
   border: 1px solid var(--code-border);
   border-radius: var(--radius-md);
+  border-radius: var(--radius-md);
   background: var(--code-bg);
 }
+
+div[class*="language-"] {
+  position: relative;
+}
+
+/* Language Badges */
+div[class*="language-"]::after {
+  content: attr(class);
+  position: absolute;
+  top: 0.65rem;
+  right: 3.25rem; /* Offset for copy button */
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--surface);
+  background: var(--text-soft);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  font-family: var(--font-ui);
+}
+
+/* Specific overrides for cleaner labels */
+div.language-python::after { content: "Python"; }
+div.language-bash::after { content: "Bash"; }
+div.language-yaml::after { content: "YAML"; }
+div.language-javascript::after { content: "JS"; }
+div.language-javascript-pre::after { content: "JS"; }
+div.language-json::after { content: "JSON"; }
+div.language-dockerfile::after { content: "Docker"; }
+div.language-ruby::after { content: "Ruby"; }
+div.language-sql::after { content: "SQL"; }
+div.language-html::after { content: "HTML"; }
+div.language-css::after { content: "CSS"; }
+div.language-scss::after { content: "SCSS"; }
+div.language-markdown::after { content: "MD"; }
 
 .article-content code.highlighter-rouge,
 .page-body code.highlighter-rouge {
@@ -739,12 +867,21 @@ svg {
   top: 0.55rem;
   right: 0.55rem;
   z-index: 2;
-  padding: 0.25rem 0.55rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   background: var(--surface);
   color: var(--heading);
   cursor: pointer;
+}
+
+.code-copy svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .toc-card,
@@ -762,7 +899,7 @@ svg {
 
 .toc-card {
   position: sticky;
-  top: 5.4rem;
+  top: 7rem;
   padding: 0.9rem 0.95rem 1.05rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -782,8 +919,16 @@ svg {
   text-decoration: none;
 }
 
-.article-toc a:hover {
+.article-toc a:hover,
+.article-toc a.is-active {
   color: var(--accent);
+}
+
+.article-toc a.is-active {
+  font-weight: 800;
+  border-left: 2px solid var(--accent);
+  padding-left: 0.5rem;
+  margin-left: -0.5rem;
 }
 
 .share-panel,
@@ -807,6 +952,58 @@ svg {
   /* Fallback to standard solid color to prevent Disqus embed.js from 
      traversing up the DOM and crashing when attempting to parse modern color-mix() */
   background: var(--surface); 
+}
+
+/* Comment Skeleton Loader */
+.skeleton-comments {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.skeleton-item {
+  display: flex;
+  gap: 1rem;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface-soft);
+}
+
+.skeleton-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.skeleton-line {
+  height: 12px;
+  background: var(--surface-soft);
+  border-radius: 4px;
+  width: 100%;
+}
+
+.skeleton-line--short { width: 40%; }
+.skeleton-line--med { width: 70%; }
+
+.skeleton-animate {
+  background: linear-gradient(
+    90deg,
+    var(--surface-soft) 25%,
+    var(--border) 50%,
+    var(--surface-soft) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
 }
 
 .share-panel::before,
@@ -1094,15 +1291,12 @@ svg {
 }
 
 @media (max-width: 1040px) {
-  .article-layout,
-  .footer-shell {
+  .article-layout, .footer-shell {
     grid-template-columns: 1fr;
   }
-
   .article-aside {
-    order: 2;
+    display: none;
   }
-
   .toc-card {
     position: static;
   }

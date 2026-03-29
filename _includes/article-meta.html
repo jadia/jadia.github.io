@@ -7,8 +7,11 @@
   {% unless reading_words contains "-" %}
     <span>{{ reading_words | plus: 220 | divided_by: 220 }} min read</span>
   {% endunless %}
-  {% if item.updated_at %}
-    <span>Updated {{ item.updated_at | date: "%B %-d, %Y" }}</span>
+  {% if page.layout == 'article' and item.url == page.url %}
+    {% if item.updated_at or (site.design.interaction.show_last_updated and item.last_modified_at) %}
+      {% assign last_date = item.last_modified_at | default: item.updated_at %}
+      <span class="meta-updated">Updated {{ last_date | date: "%B %-d, %Y" }}</span>
+    {% endif %}
   {% endif %}
 </div>
 {% if include.show_tags and item.tags and item.tags.size > 0 %}

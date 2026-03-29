@@ -5,5 +5,20 @@
   </div>
   <p>Comments are powered by Disqus and load only when requested.</p>
   <button class="button button-secondary" type="button" data-load-comments>Load comments</button>
+  
   <div id="disqus_thread"></div>
+
+  <!-- Skeleton Loader for Comments -->
+  <div class="skeleton-comments is-hidden" data-comments-skeleton>
+    {% for i in (1..3) %}
+    <div class="skeleton-item">
+      <div class="skeleton-avatar skeleton-animate"></div>
+      <div class="skeleton-content">
+        <div class="skeleton-line skeleton-line--short skeleton-animate"></div>
+        <div class="skeleton-line skeleton-animate"></div>
+        <div class="skeleton-line skeleton-line--med skeleton-animate"></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </section>
