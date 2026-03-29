@@ -2,7 +2,6 @@
 layout: page
 title: Tags
 permalink: /tags
-description: Browse technical posts by topic.
 ---
 
 {% assign all_content = site.posts | sort: "date" | reverse %}
@@ -11,6 +10,12 @@ description: Browse technical posts by topic.
   {% assign all_tags = all_tags | concat: entry.tags %}
 {% endfor %}
 {% assign tag_words = all_tags | uniq | sort %}
+
+<div class="page-intro">
+  <p class="section-kicker">{{ tag_words.size }} Topics</p>
+  <h1 class="page-title">Browse by Tag</h1>
+  <p class="page-tagline">Explore technical posts organized by deep-dive topics, tools, and methodologies.</p>
+</div>
 
 <div class="tag-cloud">
   {% for tag in tag_words %}
