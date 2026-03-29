@@ -200,4 +200,15 @@ The static hero image used for social embedding is located at:
    - one long article desktop/mobile
    - footer alignment both themes
    - search icon expansion and submission
-4. Validate screenshot review issues are closed.
+5. Validate screenshot review issues are closed.
+
+### Technical Callouts
+
+Styles are located in `_scss/_custom.scss` under `/* Technical Callouts */`. 
+
+- `.callout`: Base styles (padding, margin, shadow).
+- `.callout--tip`: Uses `var(--accent)`.
+- `.callout--note`: Uses `var(--highlight)`.
+- `.callout--warning`: Uses a custom amber `#f59e0b`.
+
+If you change your site's main accent or highlight color in `_config.yml`, the callouts will automatically update to stay in sync.

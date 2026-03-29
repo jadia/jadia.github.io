@@ -129,4 +129,29 @@ class SiteRenderTest < Minitest::Test
     assert og_image_meta, "Expected an og:image meta tag on the article page"
     assert_includes og_image_meta["content"], "/assets/images/orion-nebula.jpg", "The og:image meta tag should point to the Orion Nebula JPG"
   end
+
+  # Verifies technical callouts (Tip, Note, Warning) are generated with correct
+  # semantic HTML and SVG icons by checking the dedicated test-callouts page.
+  def test_technical_callouts_render_correctly
+    document = SiteBuildHelper.html_for("test-callouts", "index.html")
+
+    %w[tip note warning].each do |type|
+      callout = document.at_css(".callout--#{type}")
+      assert callout, "Expected a callout of type #{type} to be rendered"
+      assert callout.at_css(".callout-header svg"), "Expected an SVG icon in the #{type} callout"
+      assert_equal type.capitalize, callout.at_css(".callout-title")&.text&.strip
+      assert_match /#{type.capitalize} content/, callout.at_css(".callout-content")&.text&.strip
+    end
+  end
+
+  # Verifies the SCSS for technical callouts is present in the final build.
+  def test_css_contains_callout_declarations
+    css = SiteBuildHelper.text_for_css
+    assert_includes css, ".callout"
+    assert_includes css, ".callout--tip"
+    assert_includes css, ".callout--note"
+    assert_includes css, ".callout--warning"
+    # Verify we are using the professional amber for warnings
+    assert_includes css, "#f59e0b"
+  end
 end

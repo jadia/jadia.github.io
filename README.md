@@ -79,6 +79,24 @@ bundle exec ruby -Itest test/site_render_test.rb
 
 The project securely relies on the standard `jekyll-compose` plugin to scaffold new posts cleanly. This natively respects your global `_config.yml` defaults.
 
+### Technical Callouts
+
+The site supports custom Liquid blocks for technical documentation (Tips, Notes, and Warnings). Usage in Markdown:
+
+```liquid
+{% tip %}
+**Pro-tip:** Here is a helpful hint for the reader.
+{% endtip %}
+
+{% note %}
+**Note:** Some general information goes here.
+{% endnote %}
+
+{% warning %}
+**Warning:** A specific gotcha or prerequisite to keep in mind.
+{% endwarning %}
+```
+
 ### Create a post (using Docker)
 
 If you are using the primary containerized workflow:
