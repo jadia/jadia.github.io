@@ -23,6 +23,10 @@ function initThemeToggle() {
 
   updateThemeToggle(button);
   button.addEventListener("click", () => {
+    // Add micro-animation class
+    button.classList.add("is-animating");
+    setTimeout(() => button.classList.remove("is-animating"), 400);
+
     const current = document.documentElement.getAttribute("data-theme") || "light";
     setTheme(current === "light" ? "dark" : "light");
     updateThemeToggle(button);
