@@ -104,6 +104,8 @@ navigation:
       url: /archive
     - title: Topics
       url: /tags
+    - title: Projects
+      url: /projects
     - title: About
       url: /about
 defaults:
@@ -147,6 +149,7 @@ header_pages:
   - _pages/about.md
   - _pages/archive.md
   - _pages/tags.md
+  - _pages/projects.md
 
 footer-links:
   rss: rss
